@@ -1,0 +1,59 @@
+== TODO ==
+
+=== Feature Set IMPORT ===
+
+Nice to haves (Probably Version 2.0)
+
+check for missing objects
+
+unpack pch files
+
+Check for missing textures
+
+Launch from poser
+
+Needed for Version 1.0
+ * add object for 3ds
+ * add object for obj
+ * add object for blend 
+ * add Bryce stuff
+ * add Poser Materials
+ * create rsr to png converter
+ * integrate installer
+
+=== Feature Set DB Control ===
+ * Tags (basic tagging interface) 
+ * Create sets(manual and tag based)
+
+
+=== Feature Set EXPORT/Share ===
+ * webdav (version 2.0)( Basic Web Sharing(1.0))
+ * zeroconf
+ * Sets to package
+ * dump db to xml
+
+=== Feature Set INTERFACE ===
+ * Search (find command to list all models with a tag)
+ * search for string 
+ * Tag Cloud
+ * Combine Tags (and/ or)
+ * No integer tags, no single character tags
+ * View selection/total count
+ * Sort
+ * Update
+ * add metadata
+ * view simple render
+
+=== Feature Set PACKAGE ===
+ * setup.py
+ * py2app
+ * py2exe
+
+=== Defects ===
+ * Type 15 image bug
+ * missing iccp bug
+ * quitting bug(windows and linux only?)
+
+
+
+
