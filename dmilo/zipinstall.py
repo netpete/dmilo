@@ -24,12 +24,12 @@ def install(zfile, outdir):
 			print "Unable to determine install"
 			return False
 		for each in zip.namelist():
-			newdir, filename=  os.path.split(each)
-			print newdir, filename
-			
+			try:
+				newdir, filename= [unicode(x , 'iso-8859-1') for x in  os.path.split(each)]
+			except UnicodeDecodeError, e:
+				print e
 			if -1 != newdir.lower().rfind('runtime'):
 				newdir = newdir[newdir.lower().rfind('runtime'):]	
-			print os.path.join(newdir, filename)	
 			if not os.path.exists(os.path.join(outdir,newdir)):
 				os.makedirs(os.path.join(outdir,newdir))
 			if 0 == zip.getinfo(each).file_size: #Probably a dir
