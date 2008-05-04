@@ -8,6 +8,7 @@
 __author__="Peter Tiegs"
 import sys
 import os
+import wx
 from posertypes import POSERTYPES, posertype
 from modelstore import Model, ModelStore
 #from rsrconvert import rsr2png
@@ -35,19 +36,18 @@ def importItem( item, autotags=True, resetRSR=True):
 				thismodel.setTags(pathmeta['tags'])
 			thismodel.setTags(item.type.split())
 	else:
-		pass
-		#print "Allready there%s"%item.filename
+		wx.LogDebug( "Allready there%s"%item.filename)
 
 def scandir(directory):
 	"""Scan a directory for items to import.
 		@directory: Path to items."""
-	#print directory
+	wx.LogDebug( directory )
 	for each in os.listdir(directory):
 		if os.path.isdir(os.path.join(directory,each)):	
 			scandir(os.path.join(directory,each))
 		else:
 			if each.startswith("._"):
-				pass #print each
+				pass 
 			else:
 				ext = os.path.splitext(each)[1]
 				if ext in POSERTYPES.keys():

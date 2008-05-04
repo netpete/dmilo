@@ -132,7 +132,7 @@ class xcommandPanel(wx.Panel):
 						tag = tagset.getOne()
 						models = tag.models
 					else: 
-						print "Not Tag by that name"
+						wx.LogMessage("Not Tag by that name")
 						models = Model.select()
 
 				self.GetGrandParent().GetParent().mainpanel.update(models)

@@ -61,7 +61,7 @@ class xrcApp(wx.App):
 			tag = tagset.getOne()
 			models = tag.models
 		else:
-			print "No Tag by that name"
+			ws.LogMessage("No Tag by that name")
 			models = Model.select()
 		self.thumbList.display(models)
 		
@@ -101,7 +101,7 @@ class xrcApp(wx.App):
 		models = Model.select()
 		before = models.count()
 		if imp_dlg.ShowModal() ==wx.ID_OK:
-		#	print imp_dlg.GetPath()
+			wx.LogDebug( "Scanning %s"%imp_dlg.GetPath())
 			ret = scandir(imp_dlg.GetPath())
 			self.done(ret, before)
 
@@ -119,13 +119,12 @@ class xrcApp(wx.App):
 		modelbmp = wx.BitmapFromImage(modelimage)
 		modelbmp.SetSize((91,91))
 		for model in models[ before : after]:
-			#print model.id
 			index = self.thumbList.thumbs.Add(modelbmp)
 			self.thumbList.addThumbnail(model)
 		self.thumbList.display(models)
 		self.tagCloud.displayTags(Tag.select(orderBy="tagname"))
 		
-		print ("Debug: Done.")
+		wx.LogDebug("Scan Done.")
 		
 
 

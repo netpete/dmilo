@@ -21,7 +21,7 @@ class thumbList(wx.ListCtrl):
 		wx.LogDebug("thumbList.OnCreate")
 		if self is evt.GetEventObject():
 			self.Unbind(wx.EVT_WINDOW_CREATE)
-			#print "Creating %r from %r"%(self, evt)
+			wx.LogDebug( "Creating %r from %r"%(self, evt))
 			self.thumbs = wx.ImageList(91,91, True )
 			self.AssignImageList(self.thumbs, wx.IMAGE_LIST_NORMAL)
 			self.resourcePath = wx.Config().Get().Read('resourcePath')
@@ -37,20 +37,19 @@ class thumbList(wx.ListCtrl):
 			for model in Model.select():
 				index = self.thumbs.Add(modelbmp)
 
-			#	print index, model.id
+			wx.LogDebug( "%s %s"%(index, model.id))
 			self.display(Model.select())
 			self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
 			#self.loadThumbnails()
 			d = threads.deferToThread(self.loadThumbnails).addCallback(self.thumbsLoaded).addErrback(self.thumbLoadErr)
 		else:
-			#print "Not My event %r , %r"%(self, evt.GetEventObject())
 			evt.Skip()
 
 	def thumbsLoaded(self, val):
-		print "ThumbsLoaded"
+		wx.LogMessage( "ThumbsLoaded")
 
 	def thumbLoadErr(self, val):
-		print "error Loading Thumbs %r"%(val)
+		wx.LogError( "error Loading Thumbs %r"%(val))
 
 	def loadThumbnails(self):
 		wx.LogDebug('loadThumbnails')
@@ -64,7 +63,7 @@ class thumbList(wx.ListCtrl):
 	def addThumbnail(self, model):
 		"""Add an individual model to the image the list.
 			@model: a reference to a Model"""
-		#print "addThumbnail: thumblength: %s"%(self.thumbs.GetImageCount())
+		wx.LogDebug( "addThumbnail: thumblength: %s"%(self.thumbs.GetImageCount()))
 		## check to see if the thumbnail file exists.
 		wx.LogDebug('addThumbnail %s'%(model.thumb))
 		if not os.path.exists(model.thumb):
