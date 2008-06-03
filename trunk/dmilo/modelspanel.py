@@ -36,8 +36,7 @@ class thumbList(wx.ListCtrl):
 			index = self.thumbs.Add(modelbmp)
 			for model in Model.select():
 				index = self.thumbs.Add(modelbmp)
-
-			wx.LogDebug( "%s %s"%(index, model.id))
+				wx.LogDebug( "%s %s"%(index, model.id))
 			self.display(Model.select())
 			self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
 			#self.loadThumbnails()

@@ -26,14 +26,14 @@ from tagcloudpanel import EVT_TAG_SELECT
 
 class xrcApp(wx.App):
 	def OnInit(self):
-		self.res = xrc.XmlResource(pkg_resources.resource_filename(__name__, 'dmilo.xrc'))
+		self.res = xrc.XmlResource(pkg_resources.resource_filename('dmilo', 'resource/dmilo.xrc'))
 		self.init_frame()
 		self.init_menu()
 		logfile = open('dmilo.log', 'w')
 		self.logger = wx.LogStderr()
 		wx.Log.SetActiveTarget(self.logger)
 		wx.LogMessage("Starting Log.")
-		wx.Log.GetActiveTarget().SetLogLevel(wx.LogError)
+#		wx.Log.GetActiveTarget().SetLogLevel(wx.LogError)
 		
 		return True
 	def init_frame(self):

@@ -2,24 +2,17 @@
 the twisted web configuration for the webview.
 	@Author: Peter Tiegs
 	Nascentia Corporation 2007 (Some Rights Reserved.)"""
-from twisted.web import resource
-from modelstore import Model, Tag
 import os
+import pkg_resources
+from twisted.web import resource
 from mako.template import Template
-
-if os.path.exists(os.path.join(os.curdir,'templates')):
-	templatesDir = 'templates'
-elif os.name=='nt':
-	templatesDir = os.path.join(os.environ['HOMEPATH'], '.dmilo','templates')
-else:
-	templatesDir = os.path.join(os.environ['HOME'],'.dmilo','templates')
-
+from modelstore import Model, Tag
 ## Template for list of thumnails.
-setTemplate = Template(filename=os.path.join(templatesDir,'thumbset.html.mak')) 
+setTemplate = Template(pkg_resources.resource_string('dmilo','templates/thumbset.html.mak')) 
 ## Template for item metadata.
-infoTemplate = Template(filename=os.path.join(templatesDir, 'info.html.mak')) 
+infoTemplate = Template(pkg_resources.resource_string('dmilo','templates/info.html.mak')) 
 ## Template for Tagcloud.
-tagcloudTemplate = Template(filename=os.path.join(templatesDir,'tagcloud.html.mak')) 
+tagcloudTemplate = Template(pkg_resources.resource_string('dmilo','templates/tagcloud.html.mak')) 
 modelsPerPage = 5 #10
 class SetView(resource.Resource):
 	"""Provides a view of a set of thumnails."""
