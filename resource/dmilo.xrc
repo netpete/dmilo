@@ -1,0 +1,106 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxFrame" name="MainFrame">
+    <title>dMilo</title>
+    <size>800,600</size>
+    <object class="wxPanel" name="topPanel">
+      <style>wxWANTS_CHARS</style>
+      <object class="wxBoxSizer">
+        <orient>wxVERTICAL</orient>
+        <object class="sizeritem">
+          <object class="wxPanel" name="ID_MODELPANEL">
+            <object class="wxBoxSizer">
+              <orient>wxHORIZONTAL</orient>
+              <object class="sizeritem">
+                <object class="wxListCtrl" name="ID_THUMBLIST" subclass="modelspanel.thumbList">
+                  <size>800,300</size>
+                  <style>wxLC_ICON|wxLC_AUTOARRANGE|wxSUNKEN_BORDER</style>
+                </object>
+                <flag>wxGROW|wxADJUST_MINSIZE</flag>
+                <border>10</border>
+              </object>
+            </object>
+            <size></size>
+          </object>
+          <flag>wxGROW</flag>
+        </object>
+        <object class="spacer">
+          <size>5,5</size>
+        </object>
+        <object class="sizeritem">
+          <object class="wxPanel">
+            <object class="wxBoxSizer">
+              <orient>wxHORIZONTAL</orient>
+              <object class="spacer">
+                <size>5,5</size>
+                <flag>wxGROW</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxPanel" name="ID_CMDLINE" subclass="dmilocommand.commandPanel">
+                  <size>500,80</size>
+                  <style></style>
+                </object>
+                <flag>wxGROW|wxALIGN_CENTRE|wxALIGN_CENTRE_VERTICAL</flag>
+                <border>8</border>
+              </object>
+            </object>
+          </object>
+          <flag>wxGROW</flag>
+          <border>10</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxPanel" name="ID_CTRLPANEL">
+            <size>-1,60</size>
+            <object class="wxBoxSizer">
+              <orient>wxHORIZONTAL</orient>
+              <object class="sizeritem">
+                <object class="wxStaticBoxSizer">
+                  <label>TagCloud</label>
+                  <orient>wxVERTICAL</orient>
+                  <object class="sizeritem">
+                    <flag>wxGROW</flag>
+                    <object class="wxPanel" name="ID_TAGCLOUD" subclass="tagcloudpanel.xtagCloudPanel">
+                      <size>300,150</size>
+                    </object>
+                    <border>10</border>
+                  </object>
+                </object>
+                <border>10</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxPanel" name="ID_INFO" subclass="infopanel.infoPanel"/>
+                <flag>wxGROW</flag>
+                <border>10</border>
+              </object>
+            </object>
+          </object>
+          <flag>wxGROW</flag>
+          <border>10</border>
+        </object>
+      </object>
+    </object>
+    <object class="wxMenuBar">
+      <object class="wxMenu" name="ID_FILE_MENU">
+        <label>&amp;File</label>
+        <object class="wxMenuItem" name="ID_IMPORT">
+          <label>I&amp;mport</label>
+          <help>Import a Directory into the Library</help>
+        </object>
+        <object class="wxMenuItem" name="ID_QUIT">
+          <label>&amp;Quit</label>
+          <accel></accel>
+          <help>Quit dMilo</help>
+        </object>
+      </object>
+      <object class="wxMenu" name="ID_SHARE_MENU">
+        <label>Share</label>
+        <object class="wxMenuItem" name="ID_WEB_SHARE">
+          <label>Web</label>
+          <help>Start Web Sharing</help>
+          <checkable>1</checkable>
+        </object>
+      </object>
+    </object>
+    <style></style>
+  </object>
+</resource>
