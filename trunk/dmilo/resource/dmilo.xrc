@@ -12,7 +12,7 @@
             <object class="wxBoxSizer">
               <orient>wxHORIZONTAL</orient>
               <object class="sizeritem">
-                <object class="wxListCtrl" name="ID_THUMBLIST" subclass="modelspanel.thumbList">
+                <object class="wxListCtrl" name="ID_THUMBLIST" subclass="dmilo.modelspanel.thumbList">
                   <size>800,300</size>
                   <style>wxLC_ICON|wxLC_AUTOARRANGE|wxSUNKEN_BORDER</style>
                 </object>
@@ -36,7 +36,7 @@
                 <flag>wxGROW</flag>
               </object>
               <object class="sizeritem">
-                <object class="wxPanel" name="ID_CMDLINE" subclass="dmilocommand.commandPanel">
+                <object class="wxPanel" name="ID_CMDLINE" subclass="dmilo.dmilocommand.commandPanel">
                   <size>500,80</size>
                   <style></style>
                 </object>
@@ -59,7 +59,7 @@
                   <orient>wxVERTICAL</orient>
                   <object class="sizeritem">
                     <flag>wxGROW</flag>
-                    <object class="wxPanel" name="ID_TAGCLOUD" subclass="tagcloudpanel.xtagCloudPanel">
+                    <object class="wxPanel" name="ID_TAGCLOUD" subclass="dmilo.tagcloudpanel.xtagCloudPanel">
                       <size>300,150</size>
                     </object>
                     <border>10</border>
@@ -68,7 +68,7 @@
                 <border>10</border>
               </object>
               <object class="sizeritem">
-                <object class="wxPanel" name="ID_INFO" subclass="infopanel.infoPanel"/>
+                <object class="wxPanel" name="ID_INFO" subclass="dmilo.infopanel.infoPanel"/>
                 <flag>wxGROW</flag>
                 <border>10</border>
               </object>

@@ -27,6 +27,8 @@ from tagcloudpanel import EVT_TAG_SELECT
 class xrcApp(wx.App):
 	def OnInit(self):
 		self.res = xrc.XmlResource(pkg_resources.resource_filename('dmilo', 'resource/dmilo.xrc'))
+		print pkg_resources.resource_string('dmilo', 'resource/dmilo.xrc')
+		print pkg_resources.resource_filename('dmilo', 'resource/dmilo.xrc')
 		self.init_frame()
 		self.init_menu()
 		logfile = open('dmilo.log', 'w')
