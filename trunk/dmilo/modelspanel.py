@@ -7,7 +7,9 @@
 	
 __author__="Peter Tiegs"
 import wx
-import os, sys
+import os
+import sys
+import pkg_resources
 from modelstore import Model
 from twisted.internet import threads
 class thumbList(wx.ListCtrl):
@@ -24,8 +26,7 @@ class thumbList(wx.ListCtrl):
 			wx.LogDebug( "Creating %r from %r"%(self, evt))
 			self.thumbs = wx.ImageList(91,91, True )
 			self.AssignImageList(self.thumbs, wx.IMAGE_LIST_NORMAL)
-			self.resourcePath = wx.Config().Get().Read('resourcePath')
-			thumbfile = os.path.join(self.resourcePath,'nothumb.png')
+			thumbfile = pkg_resources.resource_filename('dmilo', 'resource/nothumb.png')
 			## Load the file
 			modelimage = wx.Image(thumbfile, wx.BITMAP_TYPE_PNG)
 			## Scale the image to 91 by 91
@@ -68,9 +69,9 @@ class thumbList(wx.ListCtrl):
 		if not os.path.exists(model.thumb):
 			rsr = os.path.splitext(model.thumb)[0]+".rsr"
 			if not os.path.exists(rsr):
-				thumbfile = os.path.join(self.resourcePath,'nothumb.png')
+				thumbfile = pkg_resources.resource_filename('dmilo', 'resource/nothumb.png')
 			else:
-				thumbfile = os.path.join(self.resourcePath,'rsrthumb.png')
+				thumbfile = pkg_resources.resource_filename('dmilo', 'resource/rsrthumb.png')
 		else:
 			thumbfile = model.thumb
 		## Load the file

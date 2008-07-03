@@ -1,0 +1,10 @@
+Regression Test Plan
+
+1. Read old DB
+2. Create new DB
+3. Import directory
+4. Select Item
+5. find Knowtag
+6. find unknowntag
+7. click tag
+8. quit

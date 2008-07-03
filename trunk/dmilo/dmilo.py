@@ -22,22 +22,20 @@ import optparse
 from dmiloimport import scandir
 from modelstore import Model, ModelStore, Tag
 from tagcloudpanel import EVT_TAG_SELECT
-#from dmiloprefs import dmPREF
 
 class xrcApp(wx.App):
 	def OnInit(self):
 		self.res = xrc.XmlResource(pkg_resources.resource_filename('dmilo', 'resource/dmilo.xrc'))
-		print pkg_resources.resource_string('dmilo', 'resource/dmilo.xrc')
-		print pkg_resources.resource_filename('dmilo', 'resource/dmilo.xrc')
 		self.init_frame()
 		self.init_menu()
 		logfile = open('dmilo.log', 'w')
 		self.logger = wx.LogStderr()
 		wx.Log.SetActiveTarget(self.logger)
 		wx.LogMessage("Starting Log.")
-#		wx.Log.GetActiveTarget().SetLogLevel(wx.LogError)
+		#wx.Log.GetActiveTarget().SetLogLevel(40)
 		
 		return True
+
 	def init_frame(self):
 		self.frame = self.res.LoadFrame(None, 'MainFrame')
 		self.topPanel = xrc.XRCCTRL(self.frame, 'topPanel')
@@ -63,7 +61,7 @@ class xrcApp(wx.App):
 			tag = tagset.getOne()
 			models = tag.models
 		else:
-			ws.LogMessage("No Tag by that name")
+			wx.LogMessage("No Tag by that name")
 			models = Model.select()
 		self.thumbList.display(models)
 		
@@ -112,7 +110,7 @@ class xrcApp(wx.App):
 	def done(self,ret, before):
 		models = Model.select()
 		after =models.count()
-		thumbfile = os.path.join(wx.Config().Get().Read('resourcePath'),'nothumb.png')
+		thumbfile = pkg_resources.resource_filename('dmilo', 'resource/nothumb.png')
 	
 		modelimage = wx.Image(thumbfile, wx.BITMAP_TYPE_PNG)
 		## Scale the image to 91 by 91
@@ -142,13 +140,13 @@ def main():
 
 	(options, args) = parser.parse_args()
 	#: Set the Preferences.
-	dmPref = wx.Config('dmPref')
+	dotDmiloPath =  os.path.join(os.path.expanduser('~'), '.dmilo')
+	dmPref = wx.Config('dmilo')
+	if not os.path.exists(dotDmiloPath):
+		os.makedirs(dotDmiloPath)
 	if not dmPref.Exists('dbPath'):
-		dmPref.Write('dbPath', os.path.join(os.path.dirname(__file__), 'models1.db'))
-	if not dmPref.Exists('resourcePath'):
-		dmPref.Write('resourcePath', os.path.join(os.path.dirname(__file__), 'resource'))
-	
-	if options.newdb:
+		dmPref.Write('dbPath', os.path.join(dotDmiloPath, 'dmilo.db'))
+	if options.newdb or not os.path.exists(dmPref.Read('dbPath')):
 		ModelStore(dmPref.Read('dbPath')).newStore()
 	ModelStore(dmPref.Read('dbPath'))
 	dmPref.Set(dmPref)

@@ -9,7 +9,7 @@ else:
 
 packages = find_packages()
 setup(name = 'dMilo',
-	version='0.1',
+	version='0.2',
 	description='3D Asset Management Application',
 	packages = packages,
 	#include_package_data = True,
@@ -23,4 +23,3 @@ setup(name = 'dMilo',
 	author_email='peter@nascentia.com',
 	url='www.nascentia.com',
 	)
-print packages
