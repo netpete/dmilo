@@ -5,6 +5,7 @@ the twisted web configuration for the webview.
 import os
 import pkg_resources
 from twisted.web import resource
+from twisted.web import server
 from mako.template import Template
 from modelstore import Model, Tag
 ## Template for list of thumnails.
@@ -42,6 +43,8 @@ class thumbnail(resource.Resource):
 		for each in models:
 			thumb= each.thumb
 		req.setHeader('content-type', 'image/png')
+		if not os.path.exists(thumb):
+			thumb = pkg_resources.resource_filename('dmilo', 'resource/nothumb.png')
 		imagedata = open(str(thumb), 'rb')
 		return imagedata.read()
 
@@ -72,18 +75,25 @@ class webShare(object):
 	port = 9000
 	def __init__(self, reactor):
 		self.reactor = reactor
-	def startShare(self):
-		from twisted.web import server
+		self.started = False
 		root = resource.Resource()
 		root.putChild('', SetView())
 		root.putChild('thumbnail', thumbnail())
 		root.putChild('info', infoView())
 		root.putChild('tags', tagView())
-		site = server.Site(root)
-		self.reactor.listenTCP(self.port, site)
+		self.site = server.Site(root)
+	def startShare(self):
+		self.started = True
+		self.portHandle = self.reactor.listenTCP(self.port, self.site)
 
-	def stopStare(self):
-		pass
+	def stopShare(self):
+		
+		d = self.portHandle.loseConnection()
+		d.addCallback(self.connectionLost)
 
+		self.started = False
+		
+	def connectionLost(self, result):
+		print "Connection Lost"
 
 	

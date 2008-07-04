@@ -14,11 +14,15 @@ __author__="Peter Tiegs"
 
 import wx
 from  wx import xrc
+from twisted.internet import wxreactor
+## Start using twisted as the WX event handler.
+wxreactor.install()
+from twisted.internet import reactor#, threads
 import pkg_resources
 import sys
 import os
 import optparse 
-#from webview import webShare
+from webview import webShare
 from dmiloimport import scandir
 from modelstore import Model, ModelStore, Tag
 from tagcloudpanel import EVT_TAG_SELECT
@@ -34,6 +38,7 @@ class xrcApp(wx.App):
 		wx.LogMessage("Starting Log.")
 		#wx.Log.GetActiveTarget().SetLogLevel(40)
 		
+		self.webShare= webShare(reactor)
 		return True
 
 	def init_frame(self):
@@ -91,8 +96,10 @@ class xrcApp(wx.App):
 
 	def OnWebShare(self, evt):
 		#: :TODO: Check if webshare is running and reverse
-		test = webShare(reactor)
-		test.startShare()
+		if not self.webShare.started:
+			self.webShare.startShare()
+		else:
+			self.webShare.stopShare()
 		
 
 	def OnImport(self, evt):
@@ -129,10 +136,6 @@ class xrcApp(wx.App):
 
 
 def main():
-	from twisted.internet import wxreactor
-	## Start using twisted as the WX event handler.
-	wxreactor.install()
-	from twisted.internet import reactor#, threads
 
 	parser =optparse.OptionParser()
 	parser.add_option('-n','--new', action='store_true', dest='newdb', default=False, help='Initialize a new Database')

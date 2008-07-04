@@ -37,7 +37,6 @@ class thumbList(wx.ListCtrl):
 			index = self.thumbs.Add(modelbmp)
 			for model in Model.select():
 				index = self.thumbs.Add(modelbmp)
-				wx.LogDebug( "%s %s"%(index, model.id))
 			self.display(Model.select())
 			self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
 			#self.loadThumbnails()
@@ -63,9 +62,8 @@ class thumbList(wx.ListCtrl):
 	def addThumbnail(self, model):
 		"""Add an individual model to the image the list.
 			@model: a reference to a Model"""
-		wx.LogDebug( "addThumbnail: thumblength: %s"%(self.thumbs.GetImageCount()))
 		## check to see if the thumbnail file exists.
-		wx.LogDebug('addThumbnail %s'%(model.thumb))
+		#wx.LogDebug('addThumbnail %s'%(model.thumb))
 		if not os.path.exists(model.thumb):
 			rsr = os.path.splitext(model.thumb)[0]+".rsr"
 			if not os.path.exists(rsr):
