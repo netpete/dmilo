@@ -31,17 +31,17 @@ def importItem( item, autotags=True, resetRSR=True):
 		if autotags:
 			pathmeta = item.getPathMeta()
 			if pathmeta.has_key('runtime'):
-				thismodel.setTags([pathmeta['runtime']]) # setTags takes a list not a string
+				#thismodel.setTags([pathmeta['runtime']]) # setTags takes a list not a string
+				thismodel.addToCollection(pathmeta['runtime'])
 			if pathmeta.has_key('tags'):
 				thismodel.setTags(pathmeta['tags'])
-			thismodel.setTags(item.type.split())
+			thismodel.addToCollection(item.type)
 	else:
-		wx.LogDebug( "Allready there%s"%item.filename)
+		wx.LogDebug( "Already in Database %s"%item.filename)
 
 def scandir(directory):
 	"""Scan a directory for items to import.
 		@directory: Path to items."""
-	wx.LogDebug( directory )
 	for each in os.listdir(directory):
 		if os.path.isdir(os.path.join(directory,each)):	
 			scandir(os.path.join(directory,each))
@@ -56,11 +56,11 @@ def scandir(directory):
 					importItem(item)
 
 
-def main(directory):
+def main(directory, dbPath):
 	""" Run the database import as a seperate process. """
-	db=ModelStore()
+	db=ModelStore(dbfile=dbPath)
 	scandir(directory)
 
 
 if __name__=="__main__":
-	main(sys.argv[1])
+	main(sys.argv[1], sys.argv[2])

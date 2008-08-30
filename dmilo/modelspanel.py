@@ -12,6 +12,7 @@ import sys
 import pkg_resources
 from modelstore import Model
 from twisted.internet import threads
+
 class thumbList(wx.ListCtrl):
 	"""The list control displaying the models in the database"""
 	def __init__(self, **kwargs):
@@ -74,13 +75,14 @@ class thumbList(wx.ListCtrl):
 			thumbfile = model.thumb
 		## Load the file
 		try:
+			#wx.LogMessage(thumbfile)
 			modelimage = wx.Image(thumbfile, wx.BITMAP_TYPE_PNG)
 		except:
 			wx.LogError("unable to load image %s"%(modelimage))
 			raise
 		## Scale the image to 91 by 91
 		if not modelimage.IsOk():
-			thumbfile = os.path.join(self.resourcePath,'nothumb.png')
+			thumbfile = pkg_resources.resource_filename('dmilo', 'resource/nothumb.png')
 			try:
 				modelimage = wx.Image(thumbfile, wx.BITMAP_TYPE_PNG)
 			except:
