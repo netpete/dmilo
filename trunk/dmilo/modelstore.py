@@ -46,6 +46,15 @@ class Model(SQLObject):
 				else:
 					newtag = tagset.getOne()
 				self.addTag(newtag)
+	
+	def addToCollection(self, name):
+		setname = name.lower()
+		collectionSet =Collection.selectBy(setname=setname)
+		if 0 == collectionSet.count():
+			collectionEntry = Collection(setname=setname)
+		else:
+			collectionEntry =collectionSet.getOne()
+		self.addCollection(collectionEntry)
 
 class Tag(SQLObject):
 	"""Table for Tags or Keywords."""

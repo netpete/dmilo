@@ -7,7 +7,7 @@ Poser types is a representation of the poser files in python.
 	
 import os
 import re
-from ZestyParser import *
+import ZestyParser as ZP 
 
 ## Dictionary map between extention and text for type
 POSERTYPES = {u".cr2": u"Poser Character",
@@ -16,18 +16,40 @@ POSERTYPES = {u".cr2": u"Poser Character",
 		  u".hr2":u"Poser Hair",
 		  u".hd2":u"Poser Hands",
 		  u".lt2":u"Poser LightSet"}
+class TagParser(object):
+	def __init__(self, ignoreWords = [], dropSingletons=False):
+		dTagset = ZP.Defer(lambda: self.Tagset)
+		tag = ZP.RE(r'[a-zA-Z\d]+', group=0, callback=self.cbTag)
+		self.Tagset= (tag | ZP.Omit(ZP.RE(r'[\s!_-]+')))+dTagset
+		self.tags=set()
+		self.ignoreWords = ignoreWords
+		self.dropSingletons = dropSingletons
+
+	def cbTag(self, data):
+		if self.dropSingletons and (len(data) < 2):
+			pass
+		elif data.lower() in [x.lower() for x in self.ignoreWords]:
+			pass
+		else:
+			self.tags.add(data)
+
+	def getTags(self, inputString):
+		parser=ZP.ZestyParser(inputString)
+		parser.scan(self.Tagset)
+		return self.tags
+
 class RuntimePathParser(object):
 	"""Parses the path for poser files for data about the model."""
 	def __init__(self):
 		"""Contstructor sets up the parse tokens."""
 		self.runtimefound = False
-		tDir = Defer(lambda: self.Dir)
-		pathsep = RE(r'[\\\\|\/]')
-		dirname = RE(r'[\w\s]+', group=0,callback=self.cbDirname)
-		rtdirname = RE(r'[\w\s]+', group=0)
-		filename =RE(r'[\w\s]+\.[\w]+',group=0)
-		rtDir = TokenSequence( (rtdirname,Omit(pathsep), Omit(RE(r'[Rr]untime')+pathsep+RE(r'[Ll]ibraries')+pathsep+dirname)), callback=self.cbRuntimeFound)
-		self.Dir = Omit(pathsep)+(rtDir|dirname) + (tDir|Omit(pathsep)+filename)
+		tDir = ZP.Defer(lambda: self.Dir)
+		pathsep = ZP.RE(r'[\\\\|\/]')
+		dirname = ZP.RE(r'[\w\s!-]+', group=0,callback=self.cbDirname)
+		rtdirname = ZP.RE(r'[\w\s!-]+', group=0)
+		filename =ZP.RE(r'[\w\s!-]+\.[\w]+',group=0)
+		rtDir = ZP.TokenSequence( (rtdirname,ZP.Omit(pathsep), ZP.Omit(ZP.RE(r'[Rr]untime')+pathsep+ZP.RE(r'[Ll]ibraries')+pathsep+dirname)), callback=self.cbRuntimeFound)
+		self.Dir = ZP.Omit(pathsep)+(rtDir|dirname) + (tDir|ZP.Omit(pathsep)+filename)
 
 	def cbRuntimeFound(self,data):
 		"""Callback when the runtime is found.
@@ -41,7 +63,7 @@ class RuntimePathParser(object):
 		"""Callback when a directory is found.
 			@data: the matching string (directory name)
 		"""
-		if self.runtimefound: 
+		if self.runtimefound:
 			self.pathmeta['libs'].append(data)
 
 	def getTags(self, liblist):
@@ -49,23 +71,22 @@ class RuntimePathParser(object):
 		to use as meta data tags for the Poser object.
 			@liblist: a list of strings (directory names)
 		"""
-		tags = TokenSeries(RE(r'([a-z]|[^_\-!\s])+', group=0))
-		tagset = tags
-		retval = []
+		thisTagParser = TagParser(ignoreWords=['the'], dropSingletons=True)
+		retval = set()
 		for lib in liblist:
-			parser = ZestyParser(lib.lower())
-			retval= retval+ parser.scan(tagset)
-		print retval
-		return retval
+			retval = retval.union(thisTagParser.getTags(lib.lower()))
+		return sorted(retval)
 
 	def parsePath(self,pathstring):
 		"""Parses a directory string with the tokens setup in the constructor.
 			@pathstring: full path of a directory containing a poser file type."""
 		self.pathmeta = {'runtime':'','libs':[]}
-		parser = ZestyParser(pathstring)
-		parser.scan(self.Dir)
+		parser = ZP.ZestyParser(pathstring)
+		#parser = DebuggingParser(pathstring)
+		out = parser.scan(self.Dir)
 		liblist = self.pathmeta['libs']
-		self.pathmeta['tags']=self.getTags(self.pathmeta['libs'])
+		if len(liblist) >=1:
+			self.pathmeta['tags']=self.getTags(self.pathmeta['libs'])
 		return self.pathmeta
 
 class posertype(object):
@@ -81,30 +102,10 @@ class posertype(object):
 		input = open(self.filename, "r")
 		self.raw = input.readlines()
 		input.close()
+	
 	def getPathMeta(self):
 		"""Parse the directory containing the poser file for additional meta data."""
 		return RuntimePathParser().parsePath(os.path.dirname(self.filename))
-	def _get_PathMeta(self):
-		"""@deprecated: This returns the Meta Data Extracted from the File Path """
-		pattern = re.compile('(?:^\/(?:(?:(?:[Rr]untime\/[Ll]ibraries\/[\w\s]+\/)(.*))|([\w\s]+)\/)+)')
-		## Need to support windows directory structure	
-
-		if self.filename is not None:
-			result = pattern.match(str(self.filename))
-			lib, runtime = result.groups()
-			libs = os.path.dirname(str(lib)).split('/')
-			newlibs = []
-			for lib in libs:
-				newlib = lib
-				if len(newlib) > 0:
-					newlibs.append(newlib)	
-			libs = newlibs
-			retval ={'runtime':runtime}
-			for each in libs:
-				retval['libs']= libs
-		else:
-			retval = {}
-		return retval
 
 	def parse(self):
 		"""Parse the Actual structure of the Poser file."""

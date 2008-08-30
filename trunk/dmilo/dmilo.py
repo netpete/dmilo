@@ -24,8 +24,10 @@ import os
 import optparse 
 from webview import webShare
 from dmiloimport import scandir
-from modelstore import Model, ModelStore, Tag
+from modelstore import Model, ModelStore, Tag, Collection
 from tagcloudpanel import EVT_TAG_SELECT
+
+from posertypes.posertypes import POSERTYPES
 
 class xrcApp(wx.App):
 	def OnInit(self):
@@ -48,6 +50,13 @@ class xrcApp(wx.App):
 		self.tagCloud = xrc.XRCCTRL(self.frame, 'ID_TAGCLOUD')
 		self.infoPanel = xrc.XRCCTRL(self.frame, 'ID_INFO')
 		self.thumbList = xrc.XRCCTRL(self.frame, 'ID_THUMBLIST')
+		self.dirView = xrc.XRCCTRL(self.frame, 'ID_RUNTIMETREE')
+		self.root = self.dirView.AddRoot(u'RuntimeCollections')
+		for collection in Collection.select():
+			if collection.setname:
+				child = self.dirView.AppendItem(self.root, collection.setname.capitalize())
+				for pType in sorted(POSERTYPES.values()):
+					self.dirView.AppendItem(child, pType.capitalize())
 		self.topPanel.Bind(wx.EVT_KEY_DOWN, self.OnKeyPress)
 		self.frame.Bind(EVT_TAG_SELECT, self.OnTagClick)
 		self.frame.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
