@@ -1,4 +1,4 @@
-from sqlobject import SQLObject, UnicodeCol,StringCol,EnumCol, RelatedJoin, connectionForURI, sqlhub
+from sqlobject import SQLObject, UnicodeCol,StringCol,EnumCol,ForeignKey, MultipleJoin, RelatedJoin, connectionForURI, sqlhub
 import sys
 import os
 class Model(SQLObject):
@@ -20,6 +20,8 @@ class Model(SQLObject):
 	tags = RelatedJoin('Tag')
 	## Collections containing this model.
 	collections = RelatedJoin('Collection')
+	virtualDir = RelatedJoin('VirtualDir')
+
 	
 	def _get_name(self):
 		"""Name of the model  Currently filename."""
@@ -72,6 +74,17 @@ class Collection(SQLObject):
 	## Models that are in the Set
 	models= RelatedJoin('Model')
 
+class Catalog(SQLObject):
+	parent = MultipleJoin('VirtualDir')
+	subdirs = RelatedJoin('VirtualDir')
+
+class VirtualDir(SQLObject):
+	dirname = StringCol()
+	fullpath = StringCol(alternateID=True)
+	models = RelatedJoin('Model')
+	catalog = ForeignKey('Catalog')
+	pc = RelatedJoin('Catalog')
+
 class ModelStore(object):
 	"""Class with functions to Connect to a Database and Create a new one."""
 	## Path to Database
@@ -96,6 +109,8 @@ class ModelStore(object):
 		Model.createTable()
 		Tag.createTable()
 		Collection.createTable()
+		VirtualDir.createTable()
+		Catalog.createTable()
 	
 if __name__=="__main__":
 	print "TestCode"

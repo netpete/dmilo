@@ -10,7 +10,7 @@ import sys
 import os
 import wx
 from posertypes import POSERTYPES, posertype
-from modelstore import Model, ModelStore
+from modelstore import Model,VirtualDir,Catalog, ModelStore
 #from rsrconvert import rsr2png
 
 
@@ -36,8 +36,41 @@ def importItem( item, autotags=True, resetRSR=True):
 			if pathmeta.has_key('tags'):
 				thismodel.setTags(pathmeta['tags'])
 			thismodel.addToCollection(item.type)
+		vDirs = [pathmeta['runtime'], item.type]
+		vDirs.extend(pathmeta['libs'])
+		
+		vDirs.reverse() # so stack is in correct order
+		
+		addDirs(vDirs, thismodel)
 	else:
 		wx.LogDebug( "Already in Database %s"%item.filename)
+
+def addDirs(dirStack, model, parDir=''):
+	if len (dirStack) >0:
+		
+		currentName = dirStack.pop()
+		if parDir:
+			fullPath=os.path.join(parDir, currentName)
+		else:
+			fullPath=currentName
+		currentSet = VirtualDir.selectBy(fullpath=fullPath)
+		if 0 == currentSet.count():
+			cat = Catalog()
+			currentDir=VirtualDir(dirname=currentName, fullpath=fullPath, catalogID=cat.id)
+		else:
+			currentDir=currentSet.getOne()
+			cat = currentDir.catalog
+
+		subDir = addDirs(dirStack, model,  parDir=fullPath)
+		if subDir:
+			cat.addVirtualDir(subDir)
+		else:
+			currentDir.addModel(model)
+		retval = currentDir
+	else:
+		
+		retval = None
+	return retval
 
 def scandir(directory):
 	"""Scan a directory for items to import.
