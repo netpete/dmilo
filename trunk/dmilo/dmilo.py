@@ -17,7 +17,7 @@ from  wx import xrc
 from twisted.internet import wxreactor
 ## Start using twisted as the WX event handler.
 wxreactor.install()
-from twisted.internet import reactor#, threads
+from twisted.internet import reactor, threads
 import pkg_resources
 import sys
 import os
@@ -118,8 +118,9 @@ class xrcApp(wx.App):
 		before = models.count()
 		if imp_dlg.ShowModal() ==wx.ID_OK:
 			wx.LogDebug( "Scanning %s"%imp_dlg.GetPath())
-			ret = scandir(imp_dlg.GetPath())
-			self.done(ret, before)
+			d = threads.deferToThread(scandir, imp_dlg.GetPath()).addCallback(self.done, before)
+			#ret = scandir(imp_dlg.GetPath())
+			#self.done(ret, before)
 
 		imp_dlg.Destroy()
 	
