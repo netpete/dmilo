@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <resource class="">
   <object class="wxFrame" name="MainFrame">
-    <title>dMilo</title>
-    <size>800,600</size>
     <object class="wxPanel" name="topPanel">
       <style>wxWANTS_CHARS</style>
       <object class="wxBoxSizer">
@@ -106,6 +104,7 @@
         </object>
       </object>
     </object>
-    <style/>
+    <size>1200,600</size>
+    <title>dMilo</title>
   </object>
 </resource>
