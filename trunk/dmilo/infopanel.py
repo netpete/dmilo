@@ -9,6 +9,7 @@ __author__="Peter Tiegs"
 
 import wx.html
 from webview import infoTemplate
+
 class infoPanel(wx.Panel):
 	"""The Panel containing the info block HTML window."""
 	def __init__(self):
@@ -19,14 +20,20 @@ class infoPanel(wx.Panel):
 		
 		self.PostCreate(p)
 		self.Bind(wx.EVT_WINDOW_CREATE, self.OnCreate)
+		self.Bind(wx.EVT_SIZE, self.OnSize)
 	def OnCreate(self, evt):
 		if self is evt.GetEventObject():
-			self.sizer = wx.StaticBoxSizer(wx.StaticBox(self, -1, "info"),wx.VERTICAL)
+			self.infoText=wx.html.HtmlWindow(self, -1, size=(300,150))
+			self.sizer = wx.BoxSizer(wx.VERTICAL)
 			self.SetSizer(self.sizer)
-			self.infoText=wx.html.HtmlWindow(self, -1, size=(400,150))
 			self.sizer.Add(self.infoText, 1)
-			self.sizer.Fit(self)
 		evt.Skip()
+
+	def OnSize(self, evt):
+		if hasattr(self, 't'):
+			sz= self.GetSize()
+			w, h = self.t.GetTextExtent(self.t.GetLabel())
+			self.t.SetPosition(((sz.width-w)/2, (sz.height-h)/2))
 
 	def displayInfo(self,  model):
 		"""Display the information about the model.

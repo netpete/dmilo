@@ -1,4 +1,4 @@
-from sqlobject import SQLObject, UnicodeCol,StringCol,EnumCol,ForeignKey, MultipleJoin, RelatedJoin, connectionForURI, sqlhub
+from sqlobject import SQLObject, UnicodeCol,StringCol,EnumCol,BoolCol,ForeignKey, MultipleJoin, RelatedJoin, connectionForURI, sqlhub
 import sys
 import os
 class Model(SQLObject):
@@ -80,10 +80,18 @@ class Catalog(SQLObject):
 
 class VirtualDir(SQLObject):
 	dirname = StringCol()
+	root = BoolCol()
 	fullpath = StringCol(alternateID=True)
 	models = RelatedJoin('Model')
 	catalog = ForeignKey('Catalog')
 	pc = RelatedJoin('Catalog')
+	def getAllSubdirs(self):
+		retval =[]
+		for x in self.catalog.subdirs:
+			retval.append(x.id)
+			retval.extend(x.getAllSubdirs())
+		return retval
+	
 
 class ModelStore(object):
 	"""Class with functions to Connect to a Database and Create a new one."""
