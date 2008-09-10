@@ -51,19 +51,22 @@ def addDirs(dirStack, model, parDir=''):
 		currentName = dirStack.pop()
 		if parDir:
 			fullPath=os.path.join(parDir, currentName)
+			topDir =False
 		else:
 			fullPath=currentName
+			topDir =True
 		currentSet = VirtualDir.selectBy(fullpath=fullPath)
 		if 0 == currentSet.count():
 			cat = Catalog()
-			currentDir=VirtualDir(dirname=currentName, fullpath=fullPath, catalogID=cat.id)
+			currentDir=VirtualDir(dirname=currentName, fullpath=fullPath, catalogID=cat.id, root=topDir)
 		else:
 			currentDir=currentSet.getOne()
 			cat = currentDir.catalog
 
 		subDir = addDirs(dirStack, model,  parDir=fullPath)
 		if subDir:
-			cat.addVirtualDir(subDir)
+			if not subDir in cat.subdirs:
+				cat.addVirtualDir(subDir)
 		else:
 			currentDir.addModel(model)
 		retval = currentDir
