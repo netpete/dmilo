@@ -116,8 +116,10 @@ class thumbList(wx.ListCtrl):
 			@models: SQLObject iterator for the selection of models.
 			"""
 		self.ClearAll()	
+		
 		for model in models:
 			lIndex = self.InsertImageStringItem(model.id ,model.name, model.id-1 )
+		self.SetItemState(0, wx.LIST_STATE_SELECTED, wx.LIST_STATE_SELECTED)
 
 	def idFromIndex(self, index):
 		"""Get the DB id of a model based on its position in the list.
