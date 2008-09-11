@@ -51,12 +51,15 @@ class xrcApp(wx.App):
 		self.infoPanel = xrc.XRCCTRL(self.frame, 'ID_INFO')
 		self.thumbList = xrc.XRCCTRL(self.frame, 'ID_THUMBLIST')
 		self.dirView = xrc.XRCCTRL(self.frame, 'ID_RUNTIMETREE')
-		self.root = self.dirView.addDirs(u'RuntimeCollections')
+		self.TREETOPTEXT = u'Runtimes'
+		self.root = self.dirView.addDirs(self.TREETOPTEXT)
 		self.topPanel.Bind(wx.EVT_KEY_DOWN, self.OnKeyPress)
 		self.frame.Bind(EVT_TAG_SELECT, self.OnTagClick)
 		self.frame.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
 		self.frame.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnDirSelectChange, self.dirView)
+		self.frame.Fit()
 		self.frame.Show()
+
 
 	def init_menu(self):
 		self.frame.Bind(wx.EVT_MENU, self.OnMenuQuit, id=xrc.XRCID('ID_QUIT'))
@@ -66,13 +69,15 @@ class xrcApp(wx.App):
 		self.SetMacExitMenuItemId(xrc.XRCID('ID_QUIT'))
 
 	def OnDirSelectChange(self, evt):
-		id=self.dirView.GetItemPyData( evt.GetItem())
-		vdir =  VirtualDir.selectBy(id=id)[0]
-		models = vdir.models
-		for vID in vdir.getAllSubdirs():
-			models.extend(VirtualDir.selectBy(id=vID)[0].models)	
-
-		
+		text = self.dirView.GetItemText(evt.GetItem())
+		if text == self.TREETOPTEXT:
+			models = Model.select()
+		else:
+			id=self.dirView.GetItemPyData( evt.GetItem())
+			vdir =  VirtualDir.selectBy(id=id)[0]
+			models = vdir.models
+			for vID in vdir.getAllSubdirs():
+				models.extend(VirtualDir.selectBy(id=vID)[0].models)	
 		self.thumbList.display(models)
 
 		

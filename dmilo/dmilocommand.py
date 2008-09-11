@@ -37,8 +37,8 @@ class commandPanel(wx.Panel):
 			self.selected = []
 			self.sizer = wx.BoxSizer(wx.HORIZONTAL)
 			self.SetSizer(self.sizer)
-			self.inputField = wx.TextCtrl(self, -1, "", size=(500,-1))
-			self.sizer.Add(self.inputField)
+			self.inputField = wx.TextCtrl(self, -1, "", size=self.GetSize())
+			self.sizer.Add(self.inputField, 1, flag=wx.GROW|wx.ALIGN_CENTRE)
 			self.inputField.Bind(wx.EVT_CHAR, self.OnKeyPress)
 		evt.Skip()
 	def getSelectedIDs(self):
