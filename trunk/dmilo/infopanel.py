@@ -23,7 +23,7 @@ class infoPanel(wx.Panel):
 		self.Bind(wx.EVT_SIZE, self.OnSize)
 	def OnCreate(self, evt):
 		if self is evt.GetEventObject():
-			self.infoText=wx.html.HtmlWindow(self, -1, size=(300,150))
+			self.infoText=wx.html.HtmlWindow(self, -1, size=self.GetSize())
 			self.sizer = wx.BoxSizer(wx.VERTICAL)
 			self.SetSizer(self.sizer)
 			self.sizer.Add(self.infoText, 1)

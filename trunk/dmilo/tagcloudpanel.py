@@ -43,10 +43,11 @@ class xtagCloudPanel(wx.Panel):
 		self.Bind(wx.EVT_SIZE, self.OnSize)
 	def OnCreate(self, evt):
 		if self is evt.GetEventObject():
-			self.tagLinks = tagCloudWindow(self,-1, (300,150))
+			
+			self.tagLinks = tagCloudWindow(self,-1, self.GetSize())
 			self.sizer = wx.BoxSizer(orient=wx.VERTICAL)
 			self.SetSizer(self.sizer)
-			self.sizer.Add(self.tagLinks, 1)
+			self.sizer.Add(self.tagLinks, 1, flag=wx.GROW)
 			self.displayTags(Tag.select(orderBy="tagname"))
 		evt.Skip()
 

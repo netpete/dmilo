@@ -2,14 +2,27 @@
 <resource class="">
   <object class="wxFrame" name="MainFrame">
     <object class="wxPanel" name="topPanel">
-      <style>wxWANTS_CHARS</style>
       <object class="wxBoxSizer">
         <orient>wxVERTICAL</orient>
         <object class="sizeritem">
-          <object class="wxBoxSizer">
+          <object class="wxStaticBoxSizer">
+            <object class="sizeritem">
+              <object class="wxPanel" name="ID_CMDLINE" subclass="dmilo.dmilocommand.commandPanel"/>
+              <option>1</option>
+              <flag>wxGROW</flag>
+            </object>
             <orient>wxHORIZONTAL</orient>
+          </object>
+          <flag>wxGROW</flag>
+        </object>
+        <object class="spacer">
+          <size>5</size>
+        </object>
+        <object class="sizeritem">
+          <object class="wxBoxSizer">
             <object class="spacer">
-              <size>5</size>
+              <size>10</size>
+              <flag>wxALIGN_LEFT</flag>
             </object>
             <object class="sizeritem">
               <object class="wxBoxSizer">
@@ -19,8 +32,9 @@
                       <object class="wxPanel" name="ID_TAGCLOUD" subclass="dmilo.tagcloudpanel.xtagCloudPanel">
                         <size>300,200</size>
                       </object>
+                      <option>1</option>
                       <flag>wxGROW</flag>
-                      <border>10</border>
+                      <border>0</border>
                     </object>
                     <label>Tags </label>
                     <orient>wxVERTICAL</orient>
@@ -33,13 +47,14 @@
                         <size>300,200</size>
                         <style>wxSUNKEN_BORDER|wxTR_DEFAULT_STYLE</style>
                       </object>
+                      <option>1</option>
+                      <flag>wxGROW</flag>
                     </object>
                     <label>Dirs </label>
                     <orient>wxVERTICAL</orient>
                   </object>
                 </object>
                 
-                <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxStaticBoxSizer">
                     <label>Info</label>
@@ -48,10 +63,14 @@
                       <object class="wxPanel" name="ID_INFO" subclass="dmilo.infopanel.infoPanel">
                         <size>300,200</size>
                       </object>
+                      <option>1</option>
+                      <flag>wxGROW</flag>
                     </object>
                   </object>
                 </object>
+                <orient>wxVERTICAL</orient>
               </object>
+              <flag>wxGROW</flag>
               <border>5</border>
             </object>
             <object class="spacer">
@@ -62,46 +81,44 @@
             </object>
             <object class="sizeritem">
               <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxStaticBoxSizer">
                     <object class="sizeritem">
-                      <object class="wxPanel" name="ID_MODELPANEL">
-                        <object class="wxListCtrl" name="ID_THUMBLIST" subclass="dmilo.modelspanel.thumbList">
-                          <size>900, 600</size>
-                          <style>wxSUNKEN_BORDER|wxLC_ICON|wxLC_AUTOARRANGE</style>
-                        </object>
-                        <size>-1, -1</size>
+                      <object class="wxListCtrl" name="ID_THUMBLIST" subclass="dmilo.modelspanel.thumbList">
+                        <style>wxSUNKEN_BORDER|wxLC_ICON|wxLC_AUTOARRANGE</style>
                       </object>
-                      <flag>wxALL|wxEXPAND|wxGROW</flag>
+                      <option>1</option>
+                      <flag>wxGROW</flag>
+                      <minsize>800,600</minsize>
                     </object>
                     <label>Models</label>
                     <orient>wxVERTICAL</orient>
                   </object>
+                  <option>1</option>
+                  <flag>wxGROW</flag>
                 </object>
-                <object class="spacer">
-                  <size>5</size>
-                  <option>0</option>
-                  <flag>wxEXPAND|wxGROW</flag>
-                  <border>0</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticBoxSizer">
-                    <label>Input</label>
-                    <orient>wxVERTICAL</orient>
-                    <object class="sizeritem">
-                      <object class="wxPanel" name="ID_CMDLINE" subclass="dmilo.dmilocommand.commandPanel">
-                        <size>900,80</size>
-                      </object>
-                    </object>
-                  </object>
-                </object>
+                <orient>wxVERTICAL</orient>
               </object>
+              <option>1</option>
+              <flag>wxGROW</flag>
             </object>
+            <object class="spacer">
+              <size>5</size>
+              <flag>wxALIGN_RIGHT</flag>
+            </object>
+            <orient>wxHORIZONTAL</orient>
           </object>
+          <option>1</option>
+          <flag>wxGROW</flag>
+          <border>5</border>
         </object>
-      
+        
+        <object class="spacer">
+          <size>10</size>
+          <flag>wxALIGN_BOTTOM</flag>
+        </object>
       </object>
+      <style>wxWANTS_CHARS</style>
     </object>
     <object class="wxMenuBar">
       <object class="wxMenu" name="ID_FILE_MENU">
@@ -125,7 +142,6 @@
         </object>
       </object>
     </object>
-    <size>1200,610</size>
     <title>dMilo</title>
   </object>
 </resource>
