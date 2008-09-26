@@ -15,7 +15,10 @@ class RuntimeTree(wx.TreeCtrl):
 			evt.Skip()
 
 	def addSubdirs(self, parent, vdir):
-		subs = Catalog.selectBy(id=vdir.catalog)[0].subdirs
+		cat = Catalog.selectBy(id=vdir.catalog)
+		subs = []
+		if cat.count() >0: 
+			subs = cat[0].subdirs
 		for sub in subs:
 			child = self.AppendItem(parent, sub.dirname.capitalize())
 			self.SetItemPyData(child, sub.id)
