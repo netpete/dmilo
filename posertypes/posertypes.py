@@ -44,7 +44,7 @@ class RuntimePathParser(object):
 		"""Contstructor sets up the parse tokens."""
 		self.runtimefound = False
 		tDir = ZP.Defer(lambda: self.Dir)
-		pathsep = ZP.RE(r'[\\\\|\/]')
+		pathsep = ZP.RE(r'[\\|\/]')
 		dirname = ZP.RE(r'[\w\s!-]+', group=0,callback=self.cbDirname)
 		rtdirname = ZP.RE(r'[\w\s!-]+', group=0)
 		filename =ZP.RE(r'[\w\s!-]+\.[\w]+',group=0)
@@ -80,9 +80,10 @@ class RuntimePathParser(object):
 	def parsePath(self,pathstring):
 		"""Parses a directory string with the tokens setup in the constructor.
 			@pathstring: full path of a directory containing a poser file type."""
+		
 		self.pathmeta = {'runtime':'','libs':[]}
 		parser = ZP.ZestyParser(pathstring)
-		#parser = DebuggingParser(pathstring)
+	#	parser = ZP.DebuggingParser(pathstring)
 		out = parser.scan(self.Dir)
 		liblist = self.pathmeta['libs']
 		if len(liblist) >=1:
@@ -105,7 +106,8 @@ class posertype(object):
 	
 	def getPathMeta(self):
 		"""Parse the directory containing the poser file for additional meta data."""
-		return RuntimePathParser().parsePath(os.path.dirname(self.filename))
+		(drive, pathstring)=  os.path.splitdrive(os.path.dirname(self.filename))
+		return RuntimePathParser().parsePath(pathstring)
 
 	def parse(self):
 		"""Parse the Actual structure of the Poser file."""
