@@ -5,6 +5,10 @@ packages = find_packages()
 setup(name = 'dMilo',
 	version='0.2',
 	description='3D Asset Management Application',
+	author='Peter Tiegs',
+	author_email='peter@nascentia.com',
+	url='www.nascentia.com',
+	test_suite = 'dmilo.dmilo_test.test_suite',
 	packages = packages,
 	entry_points = {
 		'console_scripts': [
@@ -23,7 +27,4 @@ setup(name = 'dMilo',
 	'sqlobject',
 	'ZestyParser',	
 	],
-	author='Peter Tiegs',
-	author_email='peter@nascentia.com',
-	url='www.nascentia.com',
 	)

@@ -55,24 +55,34 @@ class thumbList(wx.ListCtrl):
 		wx.LogDebug('loadThumbnails')
 		models = Model.select()
 		for model in models:
-			self.addThumbnail(model)
+			#self.addThumbnail(model)
+			self.addThumbnailFromDB(model)
 		wx.LogDebug('Done Loading Thumbnails')
 		return models
 
+	def addThumbnailFromDB(self, model):
+		buffer = model.thumb.bitmap
+		modelimage = wx.ImageFromData(model.thumb.width,model.thumb.height, model.thumb.bitmap)
 
+		if not modelimage.IsOk():
+			print "ERROR"
+		
+		wx.CallAfter(self.updateBitmap, modelimage, model)
+
+		
 	def addThumbnail(self, model):
 		"""Add an individual model to the image the list.
 			@model: a reference to a Model"""
 		## check to see if the thumbnail file exists.
 		#wx.LogDebug('addThumbnail %s'%(model.thumb))
-		if not os.path.exists(model.thumb):
-			rsr = os.path.splitext(model.thumb)[0]+".rsr"
+		if not os.path.exists(model.thumb.filename):
+			rsr = os.path.splitext(model.thumb.filename)[0]+".rsr"
 			if not os.path.exists(rsr):
 				thumbfile = pkg_resources.resource_filename('dmilo', 'resource/nothumb.png')
 			else:
 				thumbfile = pkg_resources.resource_filename('dmilo', 'resource/rsrthumb.png')
 		else:
-			thumbfile = model.thumb
+			thumbfile = model.thumb.filename
 		## Load the file
 		try:
 			#wx.LogMessage(thumbfile)
