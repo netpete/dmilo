@@ -88,11 +88,14 @@ class ModelSQLTest(unittest.TestCase):
 	def tearDown(self):
 		modelstore.Model.dropTable(ifExists=True)
 
+class TagSQLTest(unittest.TestCase)
+	pass
 		
 		
 
 test_suite = unittest.TestSuite()
 test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(ModelSQLTest))
+test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(TagSQLTest))
 
 def bool2Return(boolVal):
 	if boolVal:
