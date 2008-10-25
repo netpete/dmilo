@@ -1,32 +1,33 @@
-from sqlobject import SQLObject,IntCol, UnicodeCol,StringCol,EnumCol,BoolCol,BLOBCol,ForeignKey, MultipleJoin, RelatedJoin, connectionForURI, sqlhub
+#!/usr/bin/python
 import sys
 import os
 
+import sqlobject
 import pkg_resources
 import wx
 import rdflib
 
-class Model(SQLObject):
+class Model(sqlobject.SQLObject):
 	"""Columns for 3D Model metadata"""
-	thumb = ForeignKey('Thumbnail')
+	thumb = sqlobject.ForeignKey('Thumbnail')
 	#: Location of Readme file on Disk
-	readme= UnicodeCol()
+	readme= sqlobject.UnicodeCol()
 	#: Location fo 3d model file on Disk
-	filename= UnicodeCol(alternateID=True)
+	filename= sqlobject.UnicodeCol(alternateID=True)
 	#: Type of file Could be (Mime-type, extention, or User understood type)
 	#: currently only User understood type
-	type= UnicodeCol()
+	type= sqlobject.UnicodeCol()
 	#: Dublin core Creater name
-	creator=UnicodeCol()
+	creator=sqlobject.UnicodeCol()
 	#: Creative commons description of License
-	license = UnicodeCol()
+	license = sqlobject.UnicodeCol()
 
 	#: Set of tags Associated with this 3d Model
-	tags = RelatedJoin('Tag')
+	tags = sqlobject.RelatedJoin('Tag')
 
 	#: Collections containing this model.
-	collections = RelatedJoin('Collection')
-	virtualDir = RelatedJoin('VirtualDir')
+	collections = sqlobject.RelatedJoin('Collection')
+	virtualDir = sqlobject.RelatedJoin('VirtualDir')
 
 	
 	def _get_name(self):
@@ -66,33 +67,33 @@ class Model(SQLObject):
 			collectionEntry =collectionSet.getOne()
 		self.addCollection(collectionEntry)
 
-class Tag(SQLObject):
+class Tag(sqlobject.SQLObject):
 	"""Table for Tags or Keywords."""
 	## The Tag text
-	tagname = StringCol(alternateID=True)
+	tagname = sqlobject.StringCol(alternateID=True)
 	## The Type of Tag @deprecated
-	tagtype = EnumCol(enumValues = ['User', 'Auto'], default='User')
+	tagtype = sqlobject.EnumCol(enumValues = ['User', 'Auto'], default='User')
 	## Models that have been tagged with this keyword.
-	models = RelatedJoin('Model')
+	models = sqlobject.RelatedJoin('Model')
 
-class Collection(SQLObject):
+class Collection(sqlobject.SQLObject):
 	""" Table for Collections."""
 	## The Name of the Collection or Set
-	setname = StringCol(alternateID=True)
+	setname = sqlobject.StringCol(alternateID=True)
 	## Models that are in the Set
-	models= RelatedJoin('Model')
+	models= sqlobject.RelatedJoin('Model')
 
-class Catalog(SQLObject):
-	parent = MultipleJoin('VirtualDir')
-	subdirs = RelatedJoin('VirtualDir')
+class Catalog(sqlobject.SQLObject):
+	parent = sqlobject.MultipleJoin('VirtualDir')
+	subdirs = sqlobject.RelatedJoin('VirtualDir')
 
-class VirtualDir(SQLObject):
-	dirname = StringCol()
-	root = BoolCol()
-	fullpath = StringCol(alternateID=True)
-	models = RelatedJoin('Model')
-	catalog = ForeignKey('Catalog')
-	pc = RelatedJoin('Catalog')
+class VirtualDir(sqlobject.SQLObject):
+	dirname = sqlobject.StringCol()
+	root = sqlobject.BoolCol()
+	fullpath = sqlobject.StringCol(alternateID=True)
+	models = sqlobject.RelatedJoin('Model')
+	catalog = sqlobject.ForeignKey('Catalog')
+	pc = sqlobject.RelatedJoin('Catalog')
 	def getAllSubdirs(self):
 		retval =[]
 		for x in self.catalog.subdirs:
@@ -100,13 +101,13 @@ class VirtualDir(SQLObject):
 			retval.extend(x.getAllSubdirs())
 		return retval
 
-class Thumbnail(SQLObject):
+class Thumbnail(sqlobject.SQLObject):
 	## Locaton of thumbnail on Disk
-	filename = UnicodeCol(alternateID=True)
+	filename = sqlobject.UnicodeCol(alternateID=True)
 	## Bitmap data
-	bitmap = BLOBCol()
-	width = IntCol()
-	height = IntCol()
+	bitmap = sqlobject.BLOBCol()
+	width = sqlobject.IntCol()
+	height = sqlobject.IntCol()
 
 	
 
@@ -125,7 +126,7 @@ class ModelStore(object):
 			#sys.exit()
 		else:
 			self.dbfile = os.path.abspath(dbfile)
-		sqlhub.processConnection = connectionForURI('sqlite:'+self.dbfile)
+		sqlobject.sqlhub.processConnection = sqlobject.connectionForURI('sqlite:'+self.dbfile)
 
 	def newStore(self, dbfile="models.db"):
 		"""Create a new Database
