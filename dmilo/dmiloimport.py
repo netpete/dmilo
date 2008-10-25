@@ -8,9 +8,10 @@
 __author__="Peter Tiegs"
 import sys
 import os
+import pkg_resources
 import wx
 from posertypes import POSERTYPES, posertype
-from modelstore import Model,VirtualDir,Catalog, ModelStore
+from modelstore import Thumbnail, Model,VirtualDir,Catalog, ModelStore
 #from rsrconvert import rsr2png
 
 
@@ -26,7 +27,16 @@ def importItem( item, autotags=True, resetRSR=True):
 				pass
 	## adds Model to the Database.
 	if 0 == Model.select(Model.q.filename==item.filename).count():
-		thismodel = Model(filename = item.filename, thumb= item.thumb, type=item.type, readme="", creator="Unknown", license="Unknown")
+		if os.path.exists(item.thumb):
+			image = wx.Image(item.thumb, wx.BITMAP_TYPE_PNG)
+			if image.IsOk():
+				thumb = Thumbnail(filename=item.thumb, bitmap=image.GetData(), width=image.GetWidth(), height=image.GetHeight())
+			else:
+				thumb = Thumbnail.selectBy(filename=pkg_resources.resource_filename('dmilo', 'resource/nothumb.png'))[0]
+		else:
+			thumb = Thumbnail.selectBy(filename=pkg_resources.resource_filename('dmilo', 'resource/nothumb.png'))[0]
+		thismodel = Model(filename = item.filename, thumb= thumb, type=item.type, readme="", creator="Unknown", license="Unknown")
+		
 		## Generates the autotags based on path.
 		if autotags:
 			pathmeta = item.getPathMeta()
@@ -38,10 +48,11 @@ def importItem( item, autotags=True, resetRSR=True):
 			thismodel.addToCollection(item.type)
 		vDirs = [pathmeta['runtime'], item.type]
 		vDirs.extend(pathmeta['libs'])
-		
+	
 		vDirs.reverse() # so stack is in correct order
-		
+	
 		addDirs(vDirs, thismodel)
+		wx.LogDebug("Added to Database %s"%(item.filename))
 	else:
 		wx.LogDebug( "Already in Database %s"%item.filename)
 

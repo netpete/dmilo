@@ -1,24 +1,30 @@
-from sqlobject import SQLObject, UnicodeCol,StringCol,EnumCol,BoolCol,ForeignKey, MultipleJoin, RelatedJoin, connectionForURI, sqlhub
+from sqlobject import SQLObject,IntCol, UnicodeCol,StringCol,EnumCol,BoolCol,BLOBCol,ForeignKey, MultipleJoin, RelatedJoin, connectionForURI, sqlhub
 import sys
 import os
+
+import pkg_resources
+import wx
+import rdflib
+
 class Model(SQLObject):
 	"""Columns for 3D Model metadata"""
-	## Locaton of thumbnail on Disk
-	thumb = UnicodeCol()
-	## Location of Readme file on Disk
+	thumb = ForeignKey('Thumbnail')
+	#: Location of Readme file on Disk
 	readme= UnicodeCol()
-	## Location fo 3d model file on Disk
+	#: Location fo 3d model file on Disk
 	filename= UnicodeCol(alternateID=True)
-	## Type of file Could be (Mime-type, extention, or User understood type)
-	## currently only User understood type
+	#: Type of file Could be (Mime-type, extention, or User understood type)
+	#: currently only User understood type
 	type= UnicodeCol()
-	## Dublin core Creater name
+	#: Dublin core Creater name
 	creator=UnicodeCol()
-	## Creative commons description of License
+	#: Creative commons description of License
 	license = UnicodeCol()
-	## Set of tags Associated with this 3d Model
+
+	#: Set of tags Associated with this 3d Model
 	tags = RelatedJoin('Tag')
-	## Collections containing this model.
+
+	#: Collections containing this model.
 	collections = RelatedJoin('Collection')
 	virtualDir = RelatedJoin('VirtualDir')
 
@@ -37,20 +43,22 @@ class Model(SQLObject):
 	def setTags(self, taglist):
 		"""Tag list is a list of tag strings"""
 		for tagname in taglist:
-			tagname = tagname.lower()
-			subtags=  tagname.split(' ')
-			if 1 < len(subtags):
-				self.setTags(subtags)
-			else:
-				tagset = Tag.selectBy(tagname=tagname)
-				if 0 == tagset.count():
-					newtag = Tag(tagname=tagname)
+			if tagname:
+				tagname = tagname.lower()
+				subtags=  tagname.split()
+				if 1 < len(subtags):
+					self.setTags(subtags)
 				else:
-					newtag = tagset.getOne()
-				self.addTag(newtag)
+					tagset = Tag.selectBy(tagname=tagname)
+					if 0 == tagset.count():
+						newtag = Tag(tagname=tagname)
+					else:
+						newtag = tagset.getOne()
+					if newtag not in self.tags:
+						self.addTag(newtag)
 	
 	def addToCollection(self, name):
-		setname = name.lower()
+		setname = name
 		collectionSet =Collection.selectBy(setname=setname)
 		if 0 == collectionSet.count():
 			collectionEntry = Collection(setname=setname)
@@ -91,6 +99,15 @@ class VirtualDir(SQLObject):
 			retval.append(x.id)
 			retval.extend(x.getAllSubdirs())
 		return retval
+
+class Thumbnail(SQLObject):
+	## Locaton of thumbnail on Disk
+	filename = UnicodeCol(alternateID=True)
+	## Bitmap data
+	bitmap = BLOBCol()
+	width = IntCol()
+	height = IntCol()
+
 	
 
 class ModelStore(object):
@@ -114,11 +131,22 @@ class ModelStore(object):
 		"""Create a new Database
 			@dbfile: path the database
 		"""
+		Thumbnail.createTable()
+		# add default thumbnails
+		nothumbfile = pkg_resources.resource_filename('dmilo', 'resource/nothumb.png')
+		nothumbimage = wx.Image(nothumbfile, wx.BITMAP_TYPE_PNG)
+		Thumbnail(filename=nothumbfile, bitmap=nothumbimage.GetData(), width=nothumbimage.GetWidth(), height=nothumbimage.GetHeight()) 
 		Model.createTable()
 		Tag.createTable()
 		Collection.createTable()
 		VirtualDir.createTable()
 		Catalog.createTable()
+
+	def serialize(self, outfile='outfile.xml'):
+		rGraph = rdflib.Graph()
+	
+		
+
 	
 if __name__=="__main__":
 	print "TestCode"
