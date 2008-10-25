@@ -88,14 +88,61 @@ class ModelSQLTest(unittest.TestCase):
 	def tearDown(self):
 		modelstore.Model.dropTable(ifExists=True)
 
-class TagSQLTest(unittest.TestCase)
-	pass
+class TagSQLTest(unittest.TestCase):
+	def testAddTag(self):
+		modelstore.Tag.createTable(ifNotExists=True)
+		modelstore.Tag(tagname= 'New')
+		actualTag = modelstore.Tag.get(1)
+		self.assertTrue('New' == actualTag.tagname)
+		modelstore.Tag.dropTable(ifExists=True)
+
+class CollectionSQLTest(unittest.TestCase):
+	def testAddCollection(self):
+		modelstore.Collection.createTable(ifNotExists=True)
+		modelstore.Collection(setname= 'New')
+		actualCollection = modelstore.Collection.get(1)
+		self.assertTrue('New' == actualCollection.setname)
+		modelstore.Collection.dropTable(ifExists=True)
 		
+class VirtualDir_CatalogSQLTest(unittest.TestCase):
+	realPath = '/path/to/thing'
+	def setUp(self):
+		modelstore.VirtualDir.createTable()
+		modelstore.Catalog.createTable()
+	def tearDown(self):
+		modelstore.Catalog.dropTable()
+		modelstore.VirtualDir.dropTable()
+
+	def testAddVirtualDir(self):
+		newCatalog = modelstore.Catalog()
+		modelstore.VirtualDir(fullpath = self.realPath, dirname='thing', root=False, catalogID=newCatalog)
+		actualVDir = modelstore.VirtualDir.get(1)
+		self.assertTrue(actualVDir.fullpath == self.realPath)
+	
+	def testGetAllSubdirs(self):
+		thingDir = modelstore.VirtualDir(fullpath = self.realPath, dirname='thing', root=False, catalogID=modelstore.Catalog())
+		toCatalog = modelstore.Catalog()
+		toCatalog.addVirtualDir(thingDir)
+		toDir = modelstore.VirtualDir(fullpath = os.path.dirname(self.realPath), dirname='to', root=False, catalogID=toCatalog)
+		self.assertTrue(modelstore.VirtualDir.selectBy(id = toDir.getAllSubdirs()[0])[0].fullpath == self.realPath)	
+		self.assertTrue(len(thingDir.getAllSubdirs())== 0)	
+
+class ThumbnailSQLTest(unittest.TestCase):
+	def testAddThumbnail(self):
+		modelstore.Thumbnail.createTable()
+		thumbFile = 'this.png'
+		thumbData = 'someblockofbinarydata'
+		modelstore.Thumbnail(filename=thumbFile, bitmap=thumbData, width=1, height=1)
+		self.assertTrue(modelstore.Thumbnail.get(1).filename == thumbFile)
+		modelstore.Thumbnail.dropTable()
 		
 
 test_suite = unittest.TestSuite()
 test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(ModelSQLTest))
 test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(TagSQLTest))
+test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(CollectionSQLTest))
+test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(VirtualDir_CatalogSQLTest))
+test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(ThumbnailSQLTest))
 
 def bool2Return(boolVal):
 	if boolVal:
