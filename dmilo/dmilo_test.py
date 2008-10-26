@@ -97,6 +97,8 @@ class TagSQLTest(unittest.TestCase):
 		modelstore.Tag.dropTable(ifExists=True)
 
 class CollectionSQLTest(unittest.TestCase):
+	def setUp(self):
+		createDB()
 	def testAddCollection(self):
 		modelstore.Collection.createTable(ifNotExists=True)
 		modelstore.Collection(setname= 'New')
