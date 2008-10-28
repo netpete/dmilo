@@ -138,6 +138,29 @@ class ThumbnailSQLTest(unittest.TestCase):
 		self.assertTrue(modelstore.Thumbnail.get(1).filename == thumbFile)
 		modelstore.Thumbnail.dropTable()
 		
+class ModelStoreTest(unittest.TestCase):
+	
+	def testInitNoDB(self):
+		newStore = modelstore.ModelStore()
+		expectedDB = os.path.join(os.getcwd(),'models1.db')
+		self.assertTrue(newStore.dbfile== expectedDB, "newStore.dbfile = %s, expected is %s")
+		self.assertFalse(os.path.exists(expectedDB))
+
+	def testInitDB(self):
+		expectedDB = os.path.join(os.getcwd(),'testDB.db')
+		newStore = modelstore.ModelStore(expectedDB)
+		self.assertTrue(newStore.dbfile== expectedDB, "newStore.dbfile = %s, expected is %s"%(newStore.dbfile, expectedDB))
+		self.assertFalse(os.path.exists(expectedDB))
+
+	def testNewStore(self):
+		expectedDB = os.path.join(os.getcwd(),'testDB.db')
+		newStore = modelstore.ModelStore(expectedDB)
+		newStore.newStore()
+		self.assertTrue(newStore.dbfile== expectedDB, "newStore.dbfile = %s, expected is %s"%(newStore.dbfile, expectedDB))
+		self.assertTrue(os.path.exists(expectedDB))
+		os.unlink(expectedDB)
+
+				
 
 test_suite = unittest.TestSuite()
 test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(ModelSQLTest))
@@ -145,6 +168,7 @@ test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(TagSQLTest)
 test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(CollectionSQLTest))
 test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(VirtualDir_CatalogSQLTest))
 test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(ThumbnailSQLTest))
+test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(ModelStoreTest))
 
 def bool2Return(boolVal):
 	if boolVal:

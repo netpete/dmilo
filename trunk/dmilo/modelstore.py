@@ -128,9 +128,8 @@ class ModelStore(object):
 			self.dbfile = os.path.abspath(dbfile)
 		sqlobject.sqlhub.processConnection = sqlobject.connectionForURI('sqlite:'+self.dbfile)
 
-	def newStore(self, dbfile="models.db"):
+	def newStore(self):
 		"""Create a new Database
-			@dbfile: path the database
 		"""
 		Thumbnail.createTable()
 		# add default thumbnails
