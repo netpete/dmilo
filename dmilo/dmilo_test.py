@@ -130,13 +130,16 @@ class VirtualDir_CatalogSQLTest(unittest.TestCase):
 		self.assertTrue(len(thingDir.getAllSubdirs())== 0)	
 
 class ThumbnailSQLTest(unittest.TestCase):
+	def setUp(self):
+		modelstore.Thumbnail.createTable(ifNotExists=True)
+
 	def testAddThumbnail(self):
-		modelstore.Thumbnail.createTable()
 		thumbFile = 'this.png'
 		thumbData = 'someblockofbinarydata'
 		modelstore.Thumbnail(filename=thumbFile, bitmap=thumbData, width=1, height=1)
 		self.assertTrue(modelstore.Thumbnail.get(1).filename == thumbFile)
-		modelstore.Thumbnail.dropTable()
+	def tearDown(self):
+		modelstore.Thumbnail.dropTable(ifExists=True)
 		
 class ModelStoreTest(unittest.TestCase):
 	
