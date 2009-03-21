@@ -8,6 +8,7 @@
 __author__="Peter Tiegs"
 import sys
 import os
+from unittest import TestCase
 import pkg_resources
 import wx
 from posertypes import POSERTYPES, posertype
@@ -46,12 +47,12 @@ def importItem( item, autotags=True, resetRSR=True):
 			if pathmeta.has_key('tags'):
 				thismodel.setTags(pathmeta['tags'])
 			thismodel.addToCollection(item.type)
-		vDirs = [pathmeta['runtime'], item.type]
-		vDirs.extend(pathmeta['libs'])
+			vDirs = [pathmeta['runtime'], item.type]
+			vDirs.extend(pathmeta['libs'])
 	
-		vDirs.reverse() # so stack is in correct order
+			vDirs.reverse() # so stack is in correct order
 	
-		addDirs(vDirs, thismodel)
+			addDirs(vDirs, thismodel)
 		wx.LogDebug("Added to Database %s"%(item.filename))
 	else:
 		wx.LogDebug( "Already in Database %s"%item.filename)
@@ -102,6 +103,17 @@ def scandir(directory):
 					item.read(os.path.join(directory, each))
 					importItem(item)
 
+class ImportTest(TestCase):
+	def testImportItem(self):
+		testItem = posertype()
+		testItem.thumb = 'test.png'
+		testItem.filename = 'test.file'
+		testItem.type = 'testType'
+		self.assert_(importItem(testItem, autotags=True, resetRSR=True))
+
+		
+	
+	
 
 def main(directory, dbPath):
 	""" Run the database import as a seperate process. """
@@ -111,3 +123,5 @@ def main(directory, dbPath):
 
 if __name__=="__main__":
 	main(sys.argv[1], sys.argv[2])
+
+
