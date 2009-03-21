@@ -2,6 +2,7 @@
 import sys
 import os
 import shutil
+import datetime
 from zipfile import ZipFile, is_zipfile
 #Settings
 
@@ -62,8 +63,11 @@ def main():
 		for filename in filelist:
 			if install(filename, dir):
 				print "Installed %s\n"%filename
+				targetDir = os.path.join(archivedir, str(datetime.date.today()))
+				if not os.path.exists( targetDir ):
+					os.makedirs( targetDir )
 				try:
-					shutil.move(filename, archivedir)
+					shutil.move(filename, targetDir)
 				except:
 					print "Unable to move %s"%(filename)
 		
