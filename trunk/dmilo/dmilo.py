@@ -51,6 +51,9 @@ class xrcApp(wx.App):
 		self.infoPanel = xrc.XRCCTRL(self.frame, 'ID_INFO')
 		self.thumbList = xrc.XRCCTRL(self.frame, 'ID_THUMBLIST')
 		self.dirView = xrc.XRCCTRL(self.frame, 'ID_RUNTIMETREE')
+		self.testPanel = xrc.XRCCTRL(self.frame, 'ID_TESTPANEL')
+		
+		
 		self.TREETOPTEXT = u'Runtimes'
 		self.root = self.dirView.addDirs(self.TREETOPTEXT)
 		self.topPanel.Bind(wx.EVT_KEY_DOWN, self.OnKeyPress)
@@ -99,15 +102,11 @@ class xrcApp(wx.App):
 
 	def OnItemSelected(self, event):
 		"""Selected Item Event Handler."""
+		wx.LogDebug("in OnItemSelected")
 		id = self.thumbList.idFromIndex(event.m_itemIndex)
 		self.cmdLine.selected =[]
-		if 1 <= self.thumbList.GetSelectedItemCount():
-			listid = self.thumbList.GetFirstSelected()
-			self.cmdLine.selected.append(self.thumbList.idFromIndex(listid))
-			while listid != -1:
-				listid = self.thumbList.GetNextSelected(listid)
-				if listid != -1:
-					self.selected.append(self.thumbList.idFromIndex(listid))
+		listid = self.thumbList.GetFirstSelected()
+		self.cmdLine.selected.append(self.thumbList.idFromIndex(listid))
 		self.infoPanel.displayInfo(Model.selectBy(id=id).getOne())
 		event.Skip()
 
@@ -155,7 +154,6 @@ class xrcApp(wx.App):
 		
 		wx.LogDebug("Scan Done.")
 
-
 def main():
 
 	parser =optparse.OptionParser()
@@ -165,15 +163,15 @@ def main():
 	(options, args) = parser.parse_args()
 	#: Set the Preferences.
 	dotDmiloPath =  os.path.join(os.path.expanduser('~'), '.dmilo')
-	dmPref = wx.Config('dmilo')
+	#dmPref = wx.Config('dmilo')
 	if not os.path.exists(dotDmiloPath):
 		os.makedirs(dotDmiloPath)
-	if not dmPref.Exists('dbPath'):
-		dmPref.Write('dbPath', os.path.join(dotDmiloPath, 'dmilo.db'))
-	if options.newdb or not os.path.exists(dmPref.Read('dbPath')):
-		ModelStore(dmPref.Read('dbPath')).newStore()
-	ModelStore(dmPref.Read('dbPath'))
-	dmPref.Set(dmPref)
+	#if not dmPref.Exists('dbPath'):
+	#	dmPref.Write('dbPath', os.path.join(dotDmiloPath, 'dmilo.db'))
+	if options.newdb or not os.path.exists( os.path.join(dotDmiloPath, 'dmilo.db')):
+		ModelStore(os.path.join(dotDmiloPath, 'dmilo.db')).newStore()
+	ModelStore(os.path.join(dotDmiloPath, 'dmilo.db'))
+	#dmPref.Set(dmPref)
 	#: Start the Application
 	if options.useXRC:
 		app = xrcApp(False)

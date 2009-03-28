@@ -49,10 +49,6 @@ Needed for Version 1.0
  * py2app
  * py2exe
 
-=== Defects ===
- * Type 15 image bug
- * missing iccp bug
- * quitting bug(windows and linux only?)
 
 
 

@@ -4,7 +4,6 @@
     <object class="wxPanel" name="topPanel">
       <object class="wxBoxSizer">
         <orient>wxVERTICAL</orient>
-        
         <object class="sizeritem">
           <object class="wxStaticBoxSizer">
             <orient>wxHORIZONTAL</orient>
@@ -27,9 +26,10 @@
         </object>
         <object class="sizeritem">
           <object class="wxBoxSizer">
+            
             <object class="spacer">
-              <size>10</size>
-              <flag>wxALIGN_LEFT</flag>
+              <size>5</size>
+              <flag>wxALIGN_RIGHT</flag>
             </object>
             <object class="sizeritem">
               <object class="wxBoxSizer">
@@ -99,6 +99,7 @@
                     </object>
                     <label>Models</label>
                     <orient>wxVERTICAL</orient>
+                  
                   </object>
                   <option>1</option>
                   <flag>wxGROW</flag>
@@ -108,10 +109,7 @@
               <option>1</option>
               <flag>wxGROW</flag>
             </object>
-            <object class="spacer">
-              <size>5</size>
-              <flag>wxALIGN_RIGHT</flag>
-            </object>
+            
             <orient>wxHORIZONTAL</orient>
           </object>
           <option>1</option>
