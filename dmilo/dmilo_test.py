@@ -2,6 +2,7 @@ import sys
 import os
 import unittest
 import modelstore
+from dmiloimport import ImportTest
 
 def createDB():
 	from sqlobject import sqlhub, connectionForURI
@@ -164,14 +165,15 @@ class ModelStoreTest(unittest.TestCase):
 		os.unlink(expectedDB)
 
 				
-
+loadTestCase =  unittest.defaultTestLoader.loadTestsFromTestCase
 test_suite = unittest.TestSuite()
-test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(ModelSQLTest))
-test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(TagSQLTest))
-test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(CollectionSQLTest))
-test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(VirtualDir_CatalogSQLTest))
-test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(ThumbnailSQLTest))
-test_suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(ModelStoreTest))
+test_suite.addTests(loadTestCase(ModelSQLTest))
+test_suite.addTests(loadTestCase(TagSQLTest))
+test_suite.addTests(loadTestCase(CollectionSQLTest))
+test_suite.addTests(loadTestCase(VirtualDir_CatalogSQLTest))
+test_suite.addTests(loadTestCase(ThumbnailSQLTest))
+test_suite.addTests(loadTestCase(ModelStoreTest))
+test_suite.addTests(loadTestCase(ImportTest))
 
 def bool2Return(boolVal):
 	if boolVal:
