@@ -3,14 +3,27 @@
 		<title>dMilo Websharing</title>
 	</head>
 	<body>
-		<ul>
-		% for model in models:
+		<table>
+		<%
+			rows = modelsPerPage/modelsPerRow
+			rem = modelsPerPage%modelsPerRow
+			if rem:
+				rows = rows +1
+		%>
+		% for row in range(rows):
+			<tr>
+				  % for model in list(models)[(row*modelsPerRow):(row*modelsPerRow)+modelsPerRow]:
 
-			<li><a href="info/${model.id}"><img src="thumbnail/${model.id}.png" alt=${model.id}/></a>
-			
-			${model.filename}</li>
+					  <td>
+						  <ul>
+							  <li><a href="info/${model.id}"><img src="thumbnail/${model.id}.png" alt="${model.id}"/></a></li>
+							  <li>${model.name}</li>
+						  </ul>
+					  </td>
+				  % endfor
+			</tr>
 		% endfor
-		</ul>
+		</table>
 <div>
 
 % if prev >= 0:
