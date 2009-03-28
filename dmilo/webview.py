@@ -14,7 +14,8 @@ setTemplate = Template(pkg_resources.resource_string('dmilo','templates/thumbset
 infoTemplate = Template(pkg_resources.resource_string('dmilo','templates/info.html.mak')) 
 ## Template for Tagcloud.
 tagcloudTemplate = Template(pkg_resources.resource_string('dmilo','templates/tagcloud.html.mak')) 
-modelsPerPage = 5 #10
+modelsPerPage = 25
+MODELS_PER_ROW = 5
 class SetView(resource.Resource):
 	"""Provides a view of a set of thumnails."""
 	isLeaf = True
@@ -29,7 +30,7 @@ class SetView(resource.Resource):
 			models = Tag.selectBy(tagname=req.args['tag'][0]).getOne().models
 		end = start + modelsPerPage
 		prev = start - modelsPerPage
-		outtext = setTemplate.render_unicode(models=models[start:end], next=end, prev=prev).encode('UTF-8')
+		outtext = setTemplate.render_unicode(models=models[start:end], modelsPerPage= modelsPerPage, modelsPerRow = MODELS_PER_ROW, next=end, prev=prev).encode('UTF-8')
 		return outtext
 
 class thumbnail(resource.Resource):
@@ -41,7 +42,8 @@ class thumbnail(resource.Resource):
 		models = Model.selectBy(id=int(index))
 		thumb = ''
 		for each in models:
-			thumb= each.thumb
+			thumb= each.thumb.filename
+			print thumb
 		req.setHeader('content-type', 'image/png')
 		if not os.path.exists(thumb):
 			thumb = pkg_resources.resource_filename('dmilo', 'resource/nothumb.png')

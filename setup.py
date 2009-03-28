@@ -3,7 +3,7 @@ from setuptools import setup , find_packages
 
 packages = find_packages()
 setup(name = 'dMilo',
-	version='0.2',
+	version='0.3',
 	description='3D Asset Management Application',
 	author='Peter Tiegs',
 	author_email='peter@nascentia.com',
