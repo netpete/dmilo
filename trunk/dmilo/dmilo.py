@@ -24,10 +24,25 @@ import os
 import optparse 
 from webview import webShare
 from dmiloimport import scandir
+from dmilowebswitch import WebSwitch
 from modelstore import Model, ModelStore, Tag, Collection, VirtualDir, Catalog
 from tagcloudpanel import EVT_TAG_SELECT
 
 from posertypes.posertypes import POSERTYPES
+
+class serviceOnlyApp( wx.App ):
+	def OnInit( self ):
+		self.res = xrc.XmlResource(pkg_resources.resource_filename('dmilo', 'resource/dmilo.xrc'))
+		logfile = open('dmilo.log', 'w')
+		self.logger = wx.LogStderr()
+		wx.Log.SetActiveTarget(self.logger)
+		wx.LogMessage("Starting Log.")
+		self.webSwitcher = WebSwitch()
+		self.webSwitcher.init_frame(self.res.LoadFrame(None, 'WebServerFrame'))
+		self.frame = self.webSwitcher.frame
+		self.frame.Fit()
+		self.frame.Show()
+		return True
 
 class xrcApp(wx.App):
 	def OnInit(self):
@@ -52,7 +67,11 @@ class xrcApp(wx.App):
 		self.thumbList = xrc.XRCCTRL(self.frame, 'ID_THUMBLIST')
 		self.dirView = xrc.XRCCTRL(self.frame, 'ID_RUNTIMETREE')
 		self.testPanel = xrc.XRCCTRL(self.frame, 'ID_TESTPANEL')
+	
 		
+		self.webSwitcher = WebSwitch()
+		self.webSwitcher.init_frame(self.res.LoadFrame(None, 'WebServerFrame'))
+		self.webframe = self.webSwitcher.frame
 		
 		self.TREETOPTEXT = u'Runtimes'
 		self.root = self.dirView.addDirs(self.TREETOPTEXT)
@@ -116,10 +135,8 @@ class xrcApp(wx.App):
 
 	def OnWebShare(self, evt):
 		#: :TODO: Check if webshare is running and reverse
-		if not self.webShare.started:
-			self.webShare.startShare()
-		else:
-			self.webShare.stopShare()
+		self.webframe.Fit()
+		self.webframe.Show()
 		
 
 	def OnImport(self, evt):
@@ -157,23 +174,21 @@ class xrcApp(wx.App):
 def main():
 
 	parser =optparse.OptionParser()
+	parser.add_option('-s','--service', action='store_true', dest='serviceOnly', default=False, help='Start dMilo with only the web service.')
 	parser.add_option('-n','--new', action='store_true', dest='newdb', default=False, help='Initialize a new Database')
-	parser.add_option('-x', '--xrc', action='store_true', dest='useXRC', default=True, help='Read the XRC file for the layout')
 
 	(options, args) = parser.parse_args()
 	#: Set the Preferences.
 	dotDmiloPath =  os.path.join(os.path.expanduser('~'), '.dmilo')
-	#dmPref = wx.Config('dmilo')
 	if not os.path.exists(dotDmiloPath):
 		os.makedirs(dotDmiloPath)
-	#if not dmPref.Exists('dbPath'):
-	#	dmPref.Write('dbPath', os.path.join(dotDmiloPath, 'dmilo.db'))
 	if options.newdb or not os.path.exists( os.path.join(dotDmiloPath, 'dmilo.db')):
 		ModelStore(os.path.join(dotDmiloPath, 'dmilo.db')).newStore()
 	ModelStore(os.path.join(dotDmiloPath, 'dmilo.db'))
-	#dmPref.Set(dmPref)
 	#: Start the Application
-	if options.useXRC:
+	if options.serviceOnly:
+		app = serviceOnlyApp( False )
+	else:
 		app = xrcApp(False)
 	
 	#: Add the Application to the Event Loop.

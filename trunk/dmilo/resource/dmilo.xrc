@@ -26,39 +26,46 @@
         </object>
         <object class="sizeritem">
           <object class="wxBoxSizer">
-            
             <object class="spacer">
               <size>5</size>
               <flag>wxALIGN_RIGHT</flag>
             </object>
             <object class="sizeritem">
               <object class="wxBoxSizer">
+                
                 <object class="sizeritem">
-                  <object class="wxStaticBoxSizer">
-                    <object class="sizeritem">
-                      <object class="wxPanel" name="ID_TAGCLOUD" subclass="dmilo.tagcloudpanel.xtagCloudPanel">
-                        <size>300,200</size>
+                  <object class="wxNotebook" name="ID_LEFT_TABS">
+                    <object class="notebookpage">
+                      <object class="wxPanel">
+                        <object class="wxStaticBoxSizer">
+                    
+                          <label>Tags </label>
+                          <orient>wxVERTICAL</orient>
+                          <object class="sizeritem">
+                            <object class="wxPanel" name="ID_TAGCLOUD" subclass="dmilo.tagcloudpanel.xtagCloudPanel">
+                              <size>300,400</size>
+                            </object>
+                          </object>
+                        </object>
                       </object>
-                      <option>1</option>
-                      <flag>wxGROW</flag>
-                      <border>0</border>
+                      <label>Tags</label>
                     </object>
-                    <label>Tags </label>
-                    <orient>wxVERTICAL</orient>
-                  </object>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticBoxSizer">
-                    <object class="sizeritem">
-                      <object class="wxTreeCtrl" name="ID_RUNTIMETREE" subclass="dmilo.dmilotree.RuntimeTree">
-                        <size>300,200</size>
-                        <style>wxSUNKEN_BORDER|wxTR_DEFAULT_STYLE</style>
+                    <object class="notebookpage">
+                      <object class="wxPanel">
+                        <object class="wxStaticBoxSizer">
+                    
+                          <label>Dirs </label>
+                          <orient>wxVERTICAL</orient>
+                          <object class="sizeritem">
+                            <object class="wxTreeCtrl" name="ID_RUNTIMETREE" subclass="dmilo.dmilotree.RuntimeTree">
+                              <size>300,400</size>
+                              <style>wxSUNKEN_BORDER|wxTR_DEFAULT_STYLE</style>
+                            </object>
+                          </object>
+                        </object>
                       </object>
-                      <option>1</option>
-                      <flag>wxGROW</flag>
+                      <label>Tree</label>
                     </object>
-                    <label>Dirs </label>
-                    <orient>wxVERTICAL</orient>
                   </object>
                 </object>
                 <object class="sizeritem">
@@ -74,6 +81,7 @@
                     </object>
                   </object>
                 </object>
+                
                 <orient>wxVERTICAL</orient>
               </object>
               <flag>wxGROW</flag>
@@ -99,7 +107,6 @@
                     </object>
                     <label>Models</label>
                     <orient>wxVERTICAL</orient>
-                  
                   </object>
                   <option>1</option>
                   <flag>wxGROW</flag>
@@ -109,7 +116,6 @@
               <option>1</option>
               <flag>wxGROW</flag>
             </object>
-            
             <orient>wxHORIZONTAL</orient>
           </object>
           <option>1</option>
@@ -146,5 +152,57 @@
       </object>
     </object>
     <title>dMilo</title>
+  </object>
+  <object class="wxFrame" name="WebServerFrame">
+    <object class="wxPanel" name="webSharing">
+      <object class="wxBoxSizer">
+        <orient>wxHORIZONTAL</orient>
+        <object class="spacer">
+          <size>5</size>
+          <option>0</option>
+          <flag>wxEXPAND|wxGROW</flag>
+          <border>0</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="spacer">
+              <size>5</size>
+              <option>0</option>
+              <flag>wxEXPAND|wxGROW</flag>
+              <border>0</border>
+            </object>
+            <object class="sizeritem">
+              <object class="wxRadioBox" name="ID_WEBSWITCH">
+                <label>Enable Web Sharing</label>
+                <dimension>0</dimension>
+                <content>
+                  <item>On</item>
+                  <item>Off</item>
+                </content>
+                <selection>1</selection>
+                <dimension>0</dimension>
+                <style>wxRA_SPECIFY_ROWS</style>
+              </object>
+              <flag>wxEXPAND</flag>
+            </object>
+            <object class="spacer">
+              <size>5</size>
+              <option>0</option>
+              <flag>wxEXPAND|wxGROW</flag>
+              <border>0</border>
+            </object>
+          </object>
+        </object>
+        <object class="spacer">
+          <size>5</size>
+          <option>0</option>
+          <flag>wxEXPAND|wxGROW</flag>
+          <border>0</border>
+        </object>
+      </object>
+      <size>-1, -1</size>
+    </object>
+    <title>dMilo Web</title>
   </object>
 </resource>
