@@ -89,7 +89,6 @@ class webShare(object):
 		self.portHandle = self.reactor.listenTCP(self.port, self.site)
 
 	def stopShare(self):
-		
 		d = self.portHandle.loseConnection()
 		d.addCallback(self.connectionLost)
 
@@ -97,5 +96,9 @@ class webShare(object):
 		
 	def connectionLost(self, result):
 		print "Connection Lost"
+		self.portHandle.unregisterProducer()	
+
+	def listeningStopped( self, result ):
+		print "listeningStopped"
 
 	
