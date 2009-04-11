@@ -11,7 +11,8 @@ from modelstore import Model, Tag
 ## Template for list of thumnails.
 setTemplate = Template(pkg_resources.resource_string('dmilo','templates/thumbset.html.mak')) 
 ## Template for item metadata.
-infoTemplate = Template(pkg_resources.resource_string('dmilo','templates/info.html.mak')) 
+#infoTemplate = Template(pkg_resources.resource_string('dmilo','templates/info.html.mak')) 
+infoTemplate = Template(pkg_resources.resource_string('dmilo','templates/info.rdf.xml.mak')) 
 ## Template for Tagcloud.
 tagcloudTemplate = Template(pkg_resources.resource_string('dmilo','templates/tagcloud.html.mak')) 
 modelsPerPage = 25
@@ -54,7 +55,8 @@ class infoView(resource.Resource):
 	""" Provides the basic view of an inidividual items metadata."""
 	isLeaf = True
 	def render_GET(self, req):
-		model = Model.selectBy(id = int(req.postpath[0])).getOne()
+		id = os.path.splitext(req.postpath[0])[0]
+		model = Model.selectBy(id = int(id)).getOne()
 		temp = model.filename.split('/')
 		temp.reverse()
 		name = temp[0]
@@ -62,7 +64,16 @@ class infoView(resource.Resource):
 		for tag in model.tags:
 			taglist.append(tag.tagname)
 		tags = ','.join(taglist)
+		req.setHeader('content-type', 'text/xml')
 		outstring = infoTemplate.render_unicode(name=name, model=model, tags =tags).encode('utf-8')
+		return outstring
+class styleView(resource.Resource):
+	""" Provides the basic view of an inidividual items metadata."""
+	isLeaf = True
+	def render_GET(self, req):
+		req.setHeader('content-type', 'text/xml')
+	
+		outstring = pkg_resources.resource_string('dmilo','templates/info.xsl')
 		return outstring
 class tagView(resource.Resource):
 	""" Provides the tag cloud view. """
@@ -82,6 +93,7 @@ class webShare(object):
 		root.putChild('', SetView())
 		root.putChild('thumbnail', thumbnail())
 		root.putChild('info', infoView())
+		root.putChild('style', styleView())
 		root.putChild('tags', tagView())
 		self.site = server.Site(root)
 	def startShare(self):
