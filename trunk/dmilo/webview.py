@@ -11,8 +11,8 @@ from modelstore import Model, Tag
 ## Template for list of thumnails.
 setTemplate = Template(pkg_resources.resource_string('dmilo','templates/thumbset.html.mak')) 
 ## Template for item metadata.
-#infoTemplate = Template(pkg_resources.resource_string('dmilo','templates/info.html.mak')) 
-infoTemplate = Template(pkg_resources.resource_string('dmilo','templates/info.rdf.xml.mak')) 
+infoTemplate = Template(pkg_resources.resource_string('dmilo','templates/info.html.mak')) 
+#infoTemplate = Template(pkg_resources.resource_string('dmilo','templates/info.rdf.xml.mak')) 
 ## Template for Tagcloud.
 tagcloudTemplate = Template(pkg_resources.resource_string('dmilo','templates/tagcloud.html.mak')) 
 modelsPerPage = 25

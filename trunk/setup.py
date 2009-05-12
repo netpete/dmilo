@@ -26,6 +26,6 @@ setup(name = 'dMilo',
 		'mako',
 		'sqlobject',
 		'ZestyParser',
-		'rdflib',	
+#		'rdflib',	
 	],
 	)
