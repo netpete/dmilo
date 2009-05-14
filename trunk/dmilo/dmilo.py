@@ -25,7 +25,7 @@ import optparse
 from webview import webShare
 from dmiloimport import scandir
 from dmilowebswitch import WebSwitch
-from modelstore import Model, ModelStore, Tag, Collection, VirtualDir, Catalog
+from modelstore import Model, ModelStore, Tag, Collection, VirtualDir, Catalog, serializeDB 
 from tagcloudpanel import EVT_TAG_SELECT
 
 from posertypes.posertypes import POSERTYPES
@@ -127,11 +127,14 @@ class xrcApp(wx.App):
 		listid = self.thumbList.GetFirstSelected()
 		self.cmdLine.selected.append(self.thumbList.idFromIndex(listid))
 		self.infoPanel.displayInfo(Model.selectBy(id=id).getOne())
+		
 		event.Skip()
 
 	def OnMenuQuit(self, evt):
 		#: :TODO: stop reactor instead
+		serializeDB(outfile=os.path.join(dotDmiloPath, 'dmilo.xml'))
 		sys.exit()	
+				
 
 	def OnWebShare(self, evt):
 		#: :TODO: Check if webshare is running and reverse
@@ -171,6 +174,7 @@ class xrcApp(wx.App):
 		
 		wx.LogDebug("Scan Done.")
 
+dotDmiloPath =  os.path.join(os.path.expanduser('~'), '.dmilo')
 def main():
 
 	parser =optparse.OptionParser()
@@ -179,7 +183,6 @@ def main():
 
 	(options, args) = parser.parse_args()
 	#: Set the Preferences.
-	dotDmiloPath =  os.path.join(os.path.expanduser('~'), '.dmilo')
 	if not os.path.exists(dotDmiloPath):
 		os.makedirs(dotDmiloPath)
 	if options.newdb or not os.path.exists( os.path.join(dotDmiloPath, 'dmilo.db')):
