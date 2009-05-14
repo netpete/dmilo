@@ -64,7 +64,7 @@ class infoView(resource.Resource):
 		for tag in model.tags:
 			taglist.append(tag.tagname)
 		tags = ','.join(taglist)
-		req.setHeader('content-type', 'text/xml')
+		req.setHeader('content-type', 'text/html')
 		outstring = infoTemplate.render_unicode(name=name, model=model, tags =tags).encode('utf-8')
 		return outstring
 class styleView(resource.Resource):

@@ -30,7 +30,7 @@ Needed for Version 1.0
  * webdav (version 2.0)( Basic Web Sharing(1.0))
  * zeroconf
  * Sets to package
- * dump db to xml
+ * dump db to xml DONE
 
 === Feature Set INTERFACE ===
  * Search (find command to list all models with a tag)
