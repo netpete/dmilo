@@ -8,10 +8,11 @@
 __author__="Peter Tiegs"
 import sys
 import os
+import hashlib
 from unittest import TestCase
 import pkg_resources
 import wx
-from posertypes import POSERTYPES, posertype
+from posertypes import POSERTYPES, posertype, parsePath 
 from modelstore import Thumbnail, Model,VirtualDir,Catalog, ModelStore
 #from rsrconvert import rsr2png
 
@@ -36,8 +37,7 @@ def importItem( item, autotags=True, resetRSR=True):
 				thumb = Thumbnail.selectBy(filename=pkg_resources.resource_filename('dmilo', 'resource/nothumb.png'))[0]
 		else:
 			thumb = Thumbnail.selectBy(filename=pkg_resources.resource_filename('dmilo', 'resource/nothumb.png'))[0]
-		thismodel = Model(filename = item.filename, thumb= thumb, type=item.type, readme="", creator="Unknown", license="Unknown")
-		
+		thismodel = Model(filename = item.filename, chksum = item.chksum, thumb= thumb, type=item.type, readme="", creator="Unknown", license="Unknown")
 		## Generates the autotags based on path.
 		if autotags:
 			pathmeta = item.getPathMeta()
@@ -52,56 +52,61 @@ def importItem( item, autotags=True, resetRSR=True):
 	
 			vDirs.reverse() # so stack is in correct order
 	
-			addDirs(vDirs, thismodel)
 		wx.LogDebug("Added to Database %s"%(item.filename))
+		return thismodel
 	else:
 		wx.LogDebug( "Already in Database %s"%item.filename)
+		return None
 
-def addDirs(dirStack, model, parDir=''):
-	if len (dirStack) >0:
-		
-		currentName = dirStack.pop()
-		if parDir:
-			fullPath=os.path.join(parDir, currentName)
-			topDir =False
-		else:
-			fullPath=currentName
-			topDir =True
-		currentSet = VirtualDir.selectBy(fullpath=fullPath)
-		if 0 == currentSet.count():
-			cat = Catalog()
-			currentDir=VirtualDir(dirname=currentName, fullpath=fullPath, catalogID=cat.id, root=topDir)
-		else:
-			currentDir=currentSet.getOne()
-			cat = currentDir.catalog
-
-		subDir = addDirs(dirStack, model,  parDir=fullPath)
-		if subDir:
-			if not subDir in cat.subdirs:
-				cat.addVirtualDir(subDir)
-		else:
-			currentDir.addModel(model)
-		retval = currentDir
-	else:
-		
-		retval = None
-	return retval
+dotDmiloPath =  os.path.join(os.path.expanduser('~'), '.dmilo')
 
 def scandir(directory):
 	"""Scan a directory for items to import.
 		@directory: Path to items."""
-	for each in os.listdir(directory):
-		if os.path.isdir(os.path.join(directory,each)):	
-			scandir(os.path.join(directory,each))
-		else:
-			if each.startswith("._"):
-				pass 
+	ms = ModelStore(os.path.join(dotDmiloPath, 'dmilo.db') )
+	mr = ms.shadow.getroot().find('Models')
+	dr = ms.shadow.getroot().find('Directories')
+	for root, dirs, files in os.walk( directory ):
+		pathMeta =  parsePath( root )
+		if pathMeta['runtime']:
+			topDir =  len( pathMeta['libs']) == 0
+		  	currentSet = VirtualDir.selectBy(fullpath=root)
+		  	if 0 == currentSet.count():
+				cat = Catalog()
+				if topDir:
+					basename = pathMeta['runtime']
+				else:
+					basename = os.path.basename(root)
+				chksum = hashlib.md5('.'.join( dirs+files )).hexdigest()
+				currentDir = VirtualDir(dirname = basename, fullpath = root, chksum = chksum, catalogID=cat, root = topDir)
+				dr.append( currentDir.asElement() )
+				if not topDir:
+					parent = list( VirtualDir.selectBy(fullpath = os.path.dirname(root) ))
+					if len (parent):
+						parent[0].catalog.addVirtualDir( currentDir )
+					else:
+						wx.LogError( "ERROR Child dir exists before parent")
+
 			else:
-				ext = os.path.splitext(each)[1]
-				if ext in POSERTYPES.keys():
-					item = posertype()
-					item.read(os.path.join(directory, each))
-					importItem(item)
+				currentDir = currentSet[0]	
+			for each in files:
+				if each.startswith("._"):
+					pass 
+				else:
+					ext = os.path.splitext(each)[1]
+					if ext in POSERTYPES.keys():
+						item = posertype()
+						item.read(os.path.join(root, each))
+						newModel = importItem(item)
+						if newModel is not None:
+							mr.append( newModel.asElement() )
+							currentDir.addModel(newModel)
+
+	wx.LogDebug(" Writing xml")
+	ms.shadow.write( ms.shadowFilename() )
+	wx.LogDebug("done")
+							
+			
 
 class ImportTest(TestCase):
 	def testImportItem(self):

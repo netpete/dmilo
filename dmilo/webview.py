@@ -9,7 +9,9 @@ from twisted.web import server
 from mako.template import Template
 from modelstore import Model, Tag
 ## Template for list of thumnails.
-setTemplate = Template(pkg_resources.resource_string('dmilo','templates/thumbset.html.mak')) 
+t1 = pkg_resources.resource_string('dmilo','templates/thumbset.html.mak')
+print t1
+setTemplate = Template(t1) 
 ## Template for item metadata.
 infoTemplate = Template(pkg_resources.resource_string('dmilo','templates/info.html.mak')) 
 #infoTemplate = Template(pkg_resources.resource_string('dmilo','templates/info.rdf.xml.mak')) 

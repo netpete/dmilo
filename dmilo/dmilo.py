@@ -32,7 +32,9 @@ from posertypes.posertypes import POSERTYPES
 
 class serviceOnlyApp( wx.App ):
 	def OnInit( self ):
-		self.res = xrc.XmlResource(pkg_resources.resource_filename('dmilo', 'resource/dmilo.xrc'))
+		self.res = xrc.EmptyXmlResource()
+		xrcFile = pkg_resources.resource_string('dmilo', 'resource/dmilo.xrc')
+		self.res.LoadFromString(xrcFile)
 		logfile = open('dmilo.log', 'w')
 		self.logger = wx.LogStderr()
 		wx.Log.SetActiveTarget(self.logger)
@@ -46,7 +48,10 @@ class serviceOnlyApp( wx.App ):
 
 class xrcApp(wx.App):
 	def OnInit(self):
-		self.res = xrc.XmlResource(pkg_resources.resource_filename('dmilo', 'resource/dmilo.xrc'))
+		self.res = xrc.EmptyXmlResource()
+		xrcFile = pkg_resources.resource_string('dmilo', 'resource/dmilo.xrc')
+		print xrcFile
+		self.res.LoadFromString(xrcFile)
 		self.init_frame()
 		self.init_menu()
 		logfile = open('dmilo.log', 'w')
@@ -132,7 +137,7 @@ class xrcApp(wx.App):
 
 	def OnMenuQuit(self, evt):
 		#: :TODO: stop reactor instead
-		serializeDB(outfile=os.path.join(dotDmiloPath, 'dmilo.xml'))
+		#serializeDB(outfile=os.path.join(dotDmiloPath, 'dmilo.xml'))
 		sys.exit()	
 				
 
@@ -175,13 +180,14 @@ class xrcApp(wx.App):
 		wx.LogDebug("Scan Done.")
 
 dotDmiloPath =  os.path.join(os.path.expanduser('~'), '.dmilo')
-def main():
-
+def main(cmd_args=None):
 	parser =optparse.OptionParser()
 	parser.add_option('-s','--service', action='store_true', dest='serviceOnly', default=False, help='Start dMilo with only the web service.')
 	parser.add_option('-n','--new', action='store_true', dest='newdb', default=False, help='Initialize a new Database')
-
-	(options, args) = parser.parse_args()
+	if cmd_args:
+		(options, args) = parser.parse_args()
+	else:
+		(options, args) = parser.parse_args(cmd_args)
 	#: Set the Preferences.
 	if not os.path.exists(dotDmiloPath):
 		os.makedirs(dotDmiloPath)
