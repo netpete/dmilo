@@ -25,7 +25,6 @@ Needed for Version 1.0
  * Tags (basic tagging interface) DONE
  * Create sets(manual and tag based)
 
-
 === Feature Set EXPORT/Share ===
  * webdav (version 2.0)( Basic Web Sharing(1.0))
  * zeroconf
@@ -48,8 +47,3 @@ Needed for Version 1.0
  * setup.py
  * py2app
  * py2exe
-
-
-
-
-
