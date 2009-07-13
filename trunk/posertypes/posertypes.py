@@ -7,6 +7,7 @@ Poser types is a representation of the poser files in python.
     
 import os
 import re
+import time
 import hashlib
 import ZestyParser as ZP 
 
