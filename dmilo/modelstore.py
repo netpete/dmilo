@@ -16,7 +16,7 @@ class Model(sqlobject.SQLObject):
     readme= sqlobject.UnicodeCol()
     #: Location fo 3d model file on Disk
     filename= sqlobject.UnicodeCol(alternateID=True)
-    chksum = sqlobject.StringCol()
+    chksum = sqlobject.UnicodeCol()
     #: Type of file Could be (Mime-type, extention, or User understood type)
     #: currently only User understood type
     type= sqlobject.UnicodeCol()
@@ -44,12 +44,12 @@ class Model(sqlobject.SQLObject):
         """ Directory containing the model"""
         return os.path.basename(os.path.dirname(self.filename))
 
-    def setTags(self, taglist):
+    def setTags(self, taglist, shadow=None):
         """Tag list is a list of tag strings"""
-        ms = ModelStore(os.path.join( dotDmiloPath, 'dmilo.db' ))
-        modelsElement = ms.shadow.getroot().find('Models')
-        matchList = [e for e in  modelsElement.findall('Description') if e.attrib['about'] == "file://%s"%self.filename ]
-
+        if shadow is not None:
+            matchList = [e for e in  shadow[0].findall('Description') if e.attrib['about'] == "file://%s"%self.filename ]
+        else:
+            matchList = []
         for tagname in taglist:
             if tagname:
                 tagname = tagname.lower()
@@ -64,9 +64,11 @@ class Model(sqlobject.SQLObject):
                         newtag = tagset.getOne()
                     if newtag not in self.tags:
                         self.addTag(newtag)
+
                         if len( matchList ):
                             ElementTree.SubElement(matchList[0], 'subject' ).text = newtag.tagname
-                            ms.shadow.write( ms.shadowFilename() )
+                            shadow.write( shadow[1] )
+
         
 
     

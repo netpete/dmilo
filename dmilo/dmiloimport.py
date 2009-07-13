@@ -8,6 +8,7 @@
 __author__="Peter Tiegs"
 import sys
 import os
+import time
 import hashlib
 from unittest import TestCase
 import pkg_resources
@@ -17,7 +18,7 @@ from modelstore import Thumbnail, Model,VirtualDir,Catalog, ModelStore
 #from rsrconvert import rsr2png
 
 
-def importItem( item, autotags=True, resetRSR=True):
+def importItem( item, autotags=True, resetRSR=True, shadow=None):
 	""" import and item into the Database. 
 		@item: a posertype ."""
 	if resetRSR:
@@ -28,7 +29,8 @@ def importItem( item, autotags=True, resetRSR=True):
 			except:
 				pass
 	## adds Model to the Database.
-	if 0 == Model.select(Model.q.filename==item.filename).count():
+	dbcount = Model.select(Model.q.filename==item.filename).count()
+	if 0 == dbcount :
 		if os.path.exists(item.thumb):
 			image = wx.Image(item.thumb, wx.BITMAP_TYPE_PNG)
 			if image.IsOk():
@@ -45,7 +47,7 @@ def importItem( item, autotags=True, resetRSR=True):
 				#thismodel.setTags([pathmeta['runtime']]) # setTags takes a list not a string
 				thismodel.addToCollection(pathmeta['runtime'])
 			if pathmeta.has_key('tags'):
-				thismodel.setTags(pathmeta['tags'])
+				thismodel.setTags(pathmeta['tags'], shadow=shadow)
 			thismodel.addToCollection(item.type)
 			vDirs = [pathmeta['runtime'], item.type]
 			vDirs.extend(pathmeta['libs'])
@@ -70,14 +72,15 @@ def scandir(directory):
 		pathMeta =  parsePath( root )
 		if pathMeta['runtime']:
 			topDir =  len( pathMeta['libs']) == 0
-		  	currentSet = VirtualDir.selectBy(fullpath=root)
-		  	if 0 == currentSet.count():
+			currentSet = VirtualDir.selectBy(fullpath=root)
+			if 0 == currentSet.count():
 				cat = Catalog()
 				if topDir:
 					basename = pathMeta['runtime']
 				else:
 					basename = os.path.basename(root)
-				chksum = hashlib.md5('.'.join( dirs+files )).hexdigest()
+				dirid = u'.'.join( dirs+files ).encode("utf-8")
+				chksum = hashlib.md5(dirid).hexdigest()
 				currentDir = VirtualDir(dirname = basename, fullpath = root, chksum = chksum, catalogID=cat, root = topDir)
 				dr.append( currentDir.asElement() )
 				if not topDir:
@@ -97,7 +100,7 @@ def scandir(directory):
 					if ext in POSERTYPES.keys():
 						item = posertype()
 						item.read(os.path.join(root, each))
-						newModel = importItem(item)
+						newModel = importItem(item, shadow=(mr, ms.shadowFilename()))
 						if newModel is not None:
 							mr.append( newModel.asElement() )
 							currentDir.addModel(newModel)
