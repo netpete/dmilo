@@ -3,14 +3,13 @@
 === Feature Set IMPORT ===
 
 Nice to haves (Probably Version 2.0)
+	check for missing objects
+	unpack pch files
+	Check for missing textures
 
-check for missing objects
-
-unpack pch files
-
-Check for missing textures
-
-Launch from poser
+Launch from poser ( Requires POSER 8 assumed with WX support)
+Load dMilo Selection in Poser 
+Load dMilo Selection in Daz Studio
 
 Needed for Version 1.0
  * add object for 3ds
@@ -19,24 +18,19 @@ Needed for Version 1.0
  * add Bryce stuff
  * add Poser Materials
  * create rsr to png converter
- * integrate installer  DONE
 
 === Feature Set DB Control ===
- * Tags (basic tagging interface) DONE
  * Create sets(manual and tag based)
 
 === Feature Set EXPORT/Share ===
- * webdav (version 2.0)( Basic Web Sharing(1.0))
+ * webdav (version 2.0)
  * zeroconf
  * Sets to package
- * dump db to xml DONE
 
 === Feature Set INTERFACE ===
  * Search (find command to list all models with a tag)
  * search for string 
- * Tag Cloud DONE
  * Combine Tags (and/ or)
- * No integer tags, no single character tags DONE
  * View selection/total count
  * Sort 
  * Update
@@ -46,4 +40,5 @@ Needed for Version 1.0
 === Feature Set PACKAGE ===
  * setup.py
  * py2app
+ 	- Need to get settings to load correct libraries
  * py2exe
