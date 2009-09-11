@@ -50,7 +50,6 @@ class xrcApp(wx.App):
 	def OnInit(self):
 		self.res = xrc.EmptyXmlResource()
 		xrcFile = pkg_resources.resource_string('dmilo', 'resource/dmilo.xrc')
-		print xrcFile
 		self.res.LoadFromString(xrcFile)
 		self.init_frame()
 		self.init_menu()

@@ -11,6 +11,7 @@ setup(name = 'dMilo',
 	test_suite = 'dmilo.dmilo_test.test_suite',
 	packages = packages,
 	app=['bin/macstart.py'],
+
 	entry_points = {
 		'console_scripts': [
 			'zipinstall = dmilo.zipinstall:main',

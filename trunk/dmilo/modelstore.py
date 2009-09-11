@@ -166,8 +166,8 @@ class ModelStore(object):
             #sys.exit()
         else:
             self.dbfile = os.path.abspath(dbfile)
-        if os.path.exists( self.shadowFilename() ):
-            self.shadow = ElementTree.parse( self.shadowFilename() )
+        #if os.path.exists( self.shadowFilename() ):
+        #    self.shadow = ElementTree.parse( self.shadowFilename() )
         sqlobject.sqlhub.processConnection = sqlobject.connectionForURI('sqlite:'+self.dbfile)
     
     def shadowFilename( self ):
